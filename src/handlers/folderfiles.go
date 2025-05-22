@@ -13,16 +13,17 @@ type FolderFilesBo struct {
 
 func FolderFiles(c *gin.Context) {
 	var bo FolderFilesBo
+	err := c.ShouldBind(&bo)
+	resFail := global.ResFail
+	logger := global.GetZapTraceLogger(c).With(zap.String("CurrentFolder", bo.CurrentFolder))
 	if err := c.ShouldBind(&bo); err != nil {
-		global.Logger.Error("参数绑定失败", zap.Error(err))
-		c.JSON(200, gin.H{
-			"code": 500,
-			"msg":  "参数缺失或格式错误",
-		})
+		resFail(logger, c, "参数绑定失败", nil, err)
 		return
 	}
-	var fullPath, err = utils.ValidatePath(bo.CurrentFolder)
+	var fullPath string
+	fullPath, err = utils.ValidatePath(bo.CurrentFolder)
 	if err != nil {
+		logger.Error("非法访问")
 		c.JSON(200, gin.H{
 			"code": 500,
 			"msg":  "非法访问",
@@ -31,6 +32,7 @@ func FolderFiles(c *gin.Context) {
 	}
 	files, err := utils.GetFolderFiles(fullPath)
 	if err != nil {
+		logger.Error("获取该目录下文件失败", zap.Error(err))
 		c.JSON(200, gin.H{
 			"code": 500,
 			"msg":  "系统错误",

@@ -7,6 +7,7 @@ toolchain go1.23.3
 require (
 	github.com/duke-git/lancet/v2 v2.3.5
 	github.com/gin-gonic/gin v1.10.1
+	github.com/google/uuid v1.6.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/spf13/viper v1.20.1
 	go.uber.org/zap v1.27.0
