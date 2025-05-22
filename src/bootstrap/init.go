@@ -58,12 +58,18 @@ func init() {
 	if !stat.IsDir() {
 		panic(Dir + "必须为目录")
 	}
+
 	global.RootDir = Dir
 
-	zapLoggerInstance, err := zap.NewDevelopment()
-	if err != nil {
-		panic("初始化日志失败" + err.Error())
+	var zapLoggerInstance *zap.Logger
+
+	if viper.GetBool("AppDebug") == false {
+		zapLoggerInstance, err = zap.NewProduction()
+	} else {
+		zapLoggerInstance, err = zap.NewDevelopment()
+
 	}
+
 	global.Logger = zapLoggerInstance
 	global.Port = viper.GetString("Port")
 }

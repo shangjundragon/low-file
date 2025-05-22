@@ -1,0 +1,16 @@
+services:
+  low-file:
+
+    image: registry.cn-hangzhou.aliyuncs.com/atdocker-sjl/low-file:latest  # 镜像ID
+    container_name: low-file  # 容器名称
+    volumes:
+      # 数据文件
+      - ./uploads:/usr/local/at-sjl/low-file/uploads
+      # 自定义应用配置文件
+      # - ./application.yml:/usr/local/at-sjl/low-file/application.yml
+    ports:
+      - "23547:23547"  # 端口映射
+    environment:
+      - TZ=Asia/Shanghai  # 可选：设置时区
+    privileged: true
+    restart: on-failure

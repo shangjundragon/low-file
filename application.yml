@@ -2,7 +2,7 @@
 Dir:
 
 # debug 模式
-AppDebug: true
+AppDebug: false
 
 # 数组
 ExternalLink:
