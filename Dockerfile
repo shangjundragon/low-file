@@ -6,7 +6,7 @@ ENV TZ=Asia/Shanghai
 USER root
 
 # 复制linux可执行文件
-COPY target/linux/low-file.linux ${BASE_DIR}/
+COPY target/low-file.linux ${BASE_DIR}/
 
 
 RUN mkdir -p ${BASE_DIR} \
