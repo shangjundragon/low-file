@@ -1,8 +1,8 @@
 # 文件目录
-Dir:
+Dir: 
 
 # debug 模式
-AppDebug: false
+AppDebug: true
 
 # 数组
 ExternalLink:

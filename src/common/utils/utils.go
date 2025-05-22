@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"low-file/src/global"
 	"os"
 	"path/filepath"
@@ -64,4 +65,19 @@ func GetFolderFiles(folder string) ([]FileInfo, error) {
 	}
 
 	return result, nil
+}
+
+// ValidatePath 验证路径是否合法（是否在 RootDir 范围内）
+func ValidatePath(path string) (string, error) {
+
+	// 2. 拼接并清理用户传入的路径
+	fullPath := filepath.Join(global.RootDir, path)
+	cleanFull := filepath.Clean(fullPath)
+
+	// 3. 检查路径是否超出根目录范围
+	if !strings.HasPrefix(cleanFull, global.RootDir) {
+		return "", fmt.Errorf("illegal path: %s", path)
+	}
+
+	return cleanFull, nil
 }

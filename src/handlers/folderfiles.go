@@ -3,10 +3,8 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"low-file/src/global"
-
 	"low-file/src/common/utils"
-	"path/filepath"
+	"low-file/src/global"
 )
 
 type FolderFilesBo struct {
@@ -23,9 +21,14 @@ func FolderFiles(c *gin.Context) {
 		})
 		return
 	}
-
-	var fullPath = filepath.Join(global.RootDir, bo.CurrentFolder)
-	fullPath = filepath.Clean(fullPath)
+	var fullPath, err = utils.ValidatePath(bo.CurrentFolder)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code": 500,
+			"msg":  "非法访问",
+		})
+		return
+	}
 	files, err := utils.GetFolderFiles(fullPath)
 	if err != nil {
 		c.JSON(200, gin.H{

@@ -3,11 +3,11 @@ package handlers
 import (
 	"github.com/duke-git/lancet/v2/strutil"
 	"github.com/gin-gonic/gin"
+	"low-file/src/common/utils"
 	"low-file/src/global"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 func UploadHandler(c *gin.Context) {
@@ -23,13 +23,13 @@ func UploadHandler(c *gin.Context) {
 		c.JSON(200, gin.H{"msg": "文件名不能为空", "code": 500})
 		return
 	}
-
-	fullPath := filepath.Join(global.RootDir, filename)
-	fullPath = filepath.Clean(fullPath)
-
-	// 防止路径遍历攻击（确保文件不会保存到 rootFolder 之外）
-	if !strings.HasPrefix(fullPath, global.RootDir) {
-		c.JSON(200, gin.H{"msg": "非法文件路径", "code": 500})
+	var fullPath string
+	fullPath, err = utils.ValidatePath(filename)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code": 500,
+			"msg":  "非法访问",
+		})
 		return
 	}
 

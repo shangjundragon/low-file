@@ -1,75 +1,103 @@
 package bootstrap
 
 import (
-	"fmt"
-	"github.com/spf13/viper"
-	"go.uber.org/zap"
+	"errors"
+	"go.uber.org/zap/zapcore"
 	"log"
-	"low-file/src/global"
-
 	"os"
 	"path/filepath"
+	"time"
+
+	"github.com/spf13/viper"
+	"go.uber.org/zap"
+	"low-file/src/global"
 )
 
 func init() {
+	// 设置viper默认配置
+	setupDefaults()
+	// 加载application.yml配置
+	loadConfiguration()
+	// 验证目录
+	validateAndCreateUploadDir()
+	// 初始化日志
+	initializeLogger()
+	// 设置global全局变量
+	setGlobalVariables()
+}
 
+func setupDefaults() {
 	workDir, err := os.Getwd()
 	if err != nil {
-		log.Fatalf("无法获取当前工作目录: %v", err)
+		log.Fatalf("无法获取工作目录: %v", err)
 	}
-	defaultDir := filepath.Join(workDir, "uploads")
-	defaultDir = filepath.Clean(defaultDir)
+
+	defaultUploadsDir := filepath.Clean(filepath.Join(workDir, "uploads"))
 	viper.SetDefault("AppDebug", false)
-	viper.SetDefault("Dir", defaultDir)
+	viper.SetDefault("Dir", defaultUploadsDir)
 	viper.SetDefault("Port", ":23547")
-	viper.SetDefault("ExternalLink", make([]string, 0))
+	viper.SetDefault("ExternalLink", []string{})
+}
+
+func loadConfiguration() {
 	viper.SetConfigName("application")
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(".")
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		fmt.Println("没有application.yml配置文件 使用默认配置")
-	}
-
-	Dir := viper.GetString("Dir")
-	// 判断是否为绝对路径
-	isAbs := filepath.IsAbs(Dir)
-	if !isAbs {
-		panic("Dir 必须为绝对路径 example D:\\local\\uploads or /usr/local/uploads")
-	}
-	stat, err := os.Stat(Dir)
-	if err != nil {
-		if os.IsNotExist(err) {
-			fmt.Println("目录不存在 自动创建目录 " + Dir)
-			err = os.MkdirAll(Dir, os.ModePerm)
-			if err != nil {
-				panic("自动创建目录失败 " + err.Error())
-			}
-			// 重新获取 stat
-			stat, err = os.Stat(Dir)
-			if err != nil {
-				panic("无法获取目录信息 " + err.Error())
-			}
-		} else {
-			panic("无法获取目录信息 " + err.Error())
+	if err := viper.ReadInConfig(); err != nil {
+		var configFileNotFoundError viper.ConfigFileNotFoundError
+		if errors.As(err, &configFileNotFoundError) {
+			log.Println("未找到配置文件，使用默认配置")
+			return
 		}
+		log.Fatalf("配置文件读取失败: %v", err)
 	}
-	if !stat.IsDir() {
-		panic(Dir + "必须为目录")
+}
+
+func validateAndCreateUploadDir() {
+	uploadDir := filepath.Clean(viper.GetString("Dir"))
+
+	if !filepath.IsAbs(uploadDir) {
+		log.Fatal("配置目录必须为绝对路径（示例：/var/uploads 或 C:\\uploads）")
 	}
 
-	global.RootDir = Dir
+	// 尝试创建目录（如果不存在）
+	if err := os.MkdirAll(uploadDir, 0755); err != nil {
+		log.Fatalf("目录创建失败: %v", err)
+	}
 
-	var zapLoggerInstance *zap.Logger
+	// 验证路径确实是目录
+	if fileInfo, err := os.Stat(uploadDir); err != nil {
+		log.Fatalf("目录访问失败: %v", err)
+	} else if !fileInfo.IsDir() {
+		log.Fatalf("路径不是目录: %s", uploadDir)
+	}
 
-	if viper.GetBool("AppDebug") == false {
-		zapLoggerInstance, err = zap.NewProduction()
+	global.RootDir = uploadDir
+}
+
+func initializeLogger() {
+	var logger *zap.Logger
+	var err error
+	var config zap.Config
+	if viper.GetBool("AppDebug") {
+		config = zap.NewDevelopmentConfig()
 	} else {
-		zapLoggerInstance, err = zap.NewDevelopment()
+		config = zap.NewProductionConfig()
+	}
+	config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout(time.DateTime)
 
+	logger, err = config.Build()
+
+	if err != nil {
+		log.Fatalf("日志初始化失败: %v", err)
 	}
 
-	global.Logger = zapLoggerInstance
+	// 替换全局 logger 并确保刷新缓冲日志（如果有）
+	zap.ReplaceGlobals(logger)
+	global.Logger = logger
+}
+
+func setGlobalVariables() {
 	global.Port = viper.GetString("Port")
 }

@@ -26,8 +26,11 @@ func InitRouter() *gin.Engine {
 		})
 	})
 
+	// 查看该目录下的所有文件/夹
 	engine.POST("/folderFiles", handlers.FolderFiles)
+	// 上传文件 指定上传目录
 	engine.POST("/upload", handlers.UploadHandler)
+	// 创建文件 指定目录
 	engine.POST("/createDir", handlers.CreateDir)
 	engine.GET("/externalLink", handlers.ExternalLink)
 	engine.POST("/del", handlers.Del)

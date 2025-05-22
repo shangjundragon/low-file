@@ -2,10 +2,8 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"low-file/src/global"
+	"low-file/src/common/utils"
 	"os"
-	"path/filepath"
-	"strings"
 )
 
 type FilePathBo struct {
@@ -22,16 +20,12 @@ func Del(c *gin.Context) {
 		})
 		return
 	}
-
-	// 拼接完整路径并清理
-	fullPath := filepath.Join(global.RootDir, bo.FilePath)
-	fullPath = filepath.Clean(fullPath)
-
-	// 防止路径越权访问（确保路径在根目录下）
-	if !strings.HasPrefix(fullPath, global.RootDir) {
+	var fullPath string
+	fullPath, err = utils.ValidatePath(bo.FilePath)
+	if err != nil {
 		c.JSON(200, gin.H{
 			"code": 500,
-			"msg":  "非法请求",
+			"msg":  "非法访问",
 		})
 		return
 	}

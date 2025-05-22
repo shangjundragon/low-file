@@ -3,9 +3,9 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"low-file/src/common/utils"
 	"low-file/src/global"
 	"os"
-	"path/filepath"
 )
 
 // CreateDirBo 请求参数结构体
@@ -19,14 +19,19 @@ func CreateDir(c *gin.Context) {
 	if err := c.ShouldBind(&bo); err != nil {
 		global.Logger.Error("参数绑定失败", zap.Error(err))
 		c.JSON(200, gin.H{
-			"code": 400,
+			"code": 500,
 			"msg":  "参数缺失或格式错误",
 		})
 		return
 	}
-
-	fullPath := filepath.Join(global.RootDir, bo.Dir)
-	fullPath = filepath.Clean(fullPath)
+	var fullPath, err = utils.ValidatePath(bo.Dir)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code": 500,
+			"msg":  "非法访问",
+		})
+		return
+	}
 
 	// 4. 创建目录
 	if err := os.MkdirAll(fullPath, os.ModePerm); err != nil {
