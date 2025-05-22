@@ -2,15 +2,15 @@ package bootstrap
 
 import (
 	"errors"
+	"github.com/spf13/viper"
+	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
+	"low-file/src/global"
 	"os"
 	"path/filepath"
 	"time"
-
-	"github.com/spf13/viper"
-	"go.uber.org/zap"
-	"low-file/src/global"
 )
 
 func init() {
@@ -77,7 +77,7 @@ func validateAndCreateUploadDir() {
 }
 
 func initializeLogger() {
-	var logger *zap.Logger
+	/*var logger *zap.Logger
 	var err error
 	var config zap.Config
 	if viper.GetBool("AppDebug") {
@@ -95,7 +95,45 @@ func initializeLogger() {
 
 	// 替换全局 logger 并确保刷新缓冲日志（如果有）
 	zap.ReplaceGlobals(logger)
+	global.Logger = logger*/
+	var logger *zap.Logger
+	var err error
+	var config zap.Config
+
+	if viper.GetBool("AppDebug") {
+		config = zap.NewDevelopmentConfig()
+	} else {
+		config = zap.NewProductionConfig()
+	}
+	config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout(time.DateTime)
+
+	// 配置日志输出到文件
+	logFile := "./app.log"
+	config.OutputPaths = []string{logFile}
+
+	// 使用 lumberjack 进行日志轮转
+	lumberJackLogger := &lumberjack.Logger{
+		Filename:   logFile,
+		MaxSize:    10, // megabytes
+		MaxBackups: 3,
+		MaxAge:     28,   // days
+		Compress:   true, // disabled by default
+	}
+
+	syncer := zapcore.AddSync(lumberJackLogger)
+	config.OutputPaths = []string{"stdout", syncer.String()}
+	config.ErrorOutputPaths = []string{"stderr"}
+
+	logger, err = config.Build(zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))
+
+	if err != nil {
+		log.Fatalf("日志初始化失败: %v", err)
+	}
+
+	// 替换全局 logger 并确保刷新缓冲日志（如果有）
+	zap.ReplaceGlobals(logger)
 	global.Logger = logger
+	defer logger.Sync() // flushes buffer, if any
 }
 
 func setGlobalVariables() {
