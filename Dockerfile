@@ -7,7 +7,7 @@ USER root
 
 # 复制linux可执行文件
 COPY target/low-file.linux ${BASE_DIR}/
-COPY public ${BASE_DIR}
+COPY ./public ${BASE_DIR}/public
 
 
 RUN mkdir -p ${BASE_DIR}/uploads && chmod +x ${BASE_DIR}/low-file.linux
