@@ -1,0 +1,10 @@
+# 文件目录
+Dir:
+
+# debug 模式
+AppDebug: true
+
+# 数组
+ExternalLink:
+
+Port: ":23547"

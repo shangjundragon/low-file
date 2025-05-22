@@ -1,0 +1,31 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    font-size: 16px;
+}
+
+body{
+    font-size: 1rem
+}
+
+.page-container {
+    height: calc(100vh - 61px);
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.mouse-active-show-container {
+    &:hover .mouse-active-show-element {
+        display: inline;
+    }
+}
+
+.mouse-active-show-element {
+    display: none;
+}
