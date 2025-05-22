@@ -29,10 +29,10 @@ func ZapLogHandler(entry zapcore.Entry) error {
 	return nil
 }
 
-func CreateZapFactory() *zap.Logger {
-	var entry = ZapLogHandler
+func CreateZapFactory(entry func(zapcore.Entry) error) *zap.Logger {
+
 	// 获取程序所处的模式：  开发调试 、 生产
-	//variable.ConfigYml := yml_config.CreateYamlFactory()
+	//viper := yml_config.CreateYamlFactory()
 	appDebug := viper.GetBool("AppDebug")
 
 	// 判断程序当前所处的模式，调试模式直接返回一个便捷的zap日志管理器地址，所有的日志打印到控制台即可

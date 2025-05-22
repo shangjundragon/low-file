@@ -2,7 +2,7 @@
 Dir: 
 
 # debug 模式
-AppDebug: false
+AppDebug: true
 
 # 文件访问外链数组
 ExternalLink:
