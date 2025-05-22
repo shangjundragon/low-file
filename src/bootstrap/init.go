@@ -3,27 +3,36 @@ package bootstrap
 import (
 	"errors"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
+	"low-file/src/common/factory"
 	"low-file/src/global"
 	"os"
 	"path/filepath"
-	"time"
+	"strings"
 )
 
 func init() {
+
+	if curPath, err := os.Getwd(); err == nil {
+		// 路径进行处理，兼容单元测试程序程序启动时的奇怪路径
+		if len(os.Args) > 1 && strings.HasPrefix(os.Args[1], "-test") {
+			global.BasePath = strings.Replace(strings.Replace(curPath, `\test`, "", 1), `/test`, "", 1)
+		} else {
+			global.BasePath = curPath
+		}
+	} else {
+		log.Fatal("初始化程序目录失败")
+	}
+
 	// 设置viper默认配置
 	setupDefaults()
 	// 加载application.yml配置
 	loadConfiguration()
-	// 验证目录
+	// 验证存储目录
 	validateAndCreateUploadDir()
 	// 初始化日志
 	initializeLogger()
-	// 设置global全局变量
-	setGlobalVariables()
+
 }
 
 func setupDefaults() {
@@ -96,46 +105,6 @@ func initializeLogger() {
 	// 替换全局 logger 并确保刷新缓冲日志（如果有）
 	zap.ReplaceGlobals(logger)
 	global.Logger = logger*/
-	var logger *zap.Logger
-	var err error
-	var config zap.Config
 
-	if viper.GetBool("AppDebug") {
-		config = zap.NewDevelopmentConfig()
-	} else {
-		config = zap.NewProductionConfig()
-	}
-	config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout(time.DateTime)
-
-	// 配置日志输出到文件
-	logFile := "./app.log"
-	config.OutputPaths = []string{logFile}
-
-	// 使用 lumberjack 进行日志轮转
-	lumberJackLogger := &lumberjack.Logger{
-		Filename:   logFile,
-		MaxSize:    10, // megabytes
-		MaxBackups: 3,
-		MaxAge:     28,   // days
-		Compress:   true, // disabled by default
-	}
-
-	syncer := zapcore.AddSync(lumberJackLogger)
-	config.OutputPaths = []string{"stdout", syncer.String()}
-	config.ErrorOutputPaths = []string{"stderr"}
-
-	logger, err = config.Build(zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))
-
-	if err != nil {
-		log.Fatalf("日志初始化失败: %v", err)
-	}
-
-	// 替换全局 logger 并确保刷新缓冲日志（如果有）
-	zap.ReplaceGlobals(logger)
-	global.Logger = logger
-	defer logger.Sync() // flushes buffer, if any
-}
-
-func setGlobalVariables() {
-	global.Port = viper.GetString("Port")
+	global.Logger = factory.CreateZapFactory()
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/spf13/viper"
 	_ "low-file/src/bootstrap"
 	"low-file/src/global"
 	"low-file/src/routers"
@@ -8,6 +9,7 @@ import (
 
 func main() {
 	router := routers.InitRouter()
-	global.Logger.Info("- http://localhost" + global.Port)
-	_ = router.Run(global.Port)
+	port := viper.GetString("Port")
+	global.Logger.Info("- http://localhost" + port)
+	_ = router.Run(port)
 }
