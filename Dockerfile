@@ -7,14 +7,14 @@ USER root
 
 # 复制linux可执行文件
 COPY target/low-file.linux ${BASE_DIR}/
+COPY public ${BASE_DIR}
 
 
-RUN mkdir -p ${BASE_DIR} \
-    && chmod +x ${BASE_DIR}/low-file.linux
+RUN mkdir -p ${BASE_DIR}/uploads && chmod +x ${BASE_DIR}/low-file.linux
 
 
 # 暴露端口
-EXPOSE 15676
+EXPOSE 23547
 
 # 启动命令
 CMD ["bash", "-c", "cd ${BASE_DIR} && ./low-file.linux"]
