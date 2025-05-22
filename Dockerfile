@@ -10,7 +10,7 @@ COPY target/low-file.linux ${BASE_DIR}/
 COPY ./public ${BASE_DIR}/public
 
 
-RUN mkdir -p ${BASE_DIR}/uploads && chmod +x ${BASE_DIR}/low-file.linux
+RUN apt-get update && apt-get install -y tzdata && mkdir -p ${BASE_DIR}/uploads && chmod +x ${BASE_DIR}/low-file.linux
 
 
 # 暴露端口
