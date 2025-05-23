@@ -47,6 +47,7 @@ func setupDefaults() {
 	viper.SetDefault("Port", ":23547")
 	viper.SetDefault("ExternalLink", []string{})
 	viper.SetDefault("AutoOpenBrowser", true)
+	viper.SetDefault("Overwrite", false)
 	// 设置日志相关配置的默认值
 	viper.SetDefault("Logs.GinLogName", "/logs/gin.log")
 	viper.SetDefault("Logs.AppFileLogName", "/logs/low-file.log")

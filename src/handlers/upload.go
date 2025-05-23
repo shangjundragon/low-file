@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/duke-git/lancet/v2/strutil"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"low-file/src/common/utils"
 	"low-file/src/global"
@@ -15,8 +16,9 @@ func UploadHandler(c *gin.Context) {
 	// 获取上传的文件
 	file, err := c.FormFile("file")
 	filename := c.PostForm("filename")
-	logger := global.GetZapTraceLogger(c).With(zap.String("filename", filename))
-	rc := global.NewResponseHandler(c, logger)
+
+	rc, logger := global.GetLoggerAndResponseHandler(c)
+	logger.With(zap.String("filename", filename))
 	if strutil.IsBlank(filename) {
 		global.ResFail(rc.WithMsg("无法获取文件名称"))
 		return
@@ -40,7 +42,18 @@ func UploadHandler(c *gin.Context) {
 		global.ResFail(rc.WithMsg("无法创建目录").WithError(err))
 		return
 	}
-
+	// 检查是否存在同名文件
+	if viper.GetBool("Overwrite") == false {
+		if _, err := os.Stat(fullPath); err == nil {
+			// 文件已存在且不允许覆盖
+			global.ResFail(rc.WithMsg("存在同名文件").WithError(err))
+			return
+		} else if !os.IsNotExist(err) {
+			// 检查文件状态时发生其他错误
+			global.ResFail(rc.WithMsg("检查文件状态失败").WithError(err))
+			return
+		}
+	}
 	// 保存文件
 	if err := c.SaveUploadedFile(file, fullPath); err != nil {
 		global.ResFail(rc.WithMsg("文件保存失败").WithError(err))

@@ -9,6 +9,11 @@ ExternalLink:
 
 Port: ":23547"
 
+# windows启动后自动打开浏览器
+AutoOpenBrowser: false
+# 同名文件覆盖上传
+Overwrite: true
+
 Logs:
   GinLogName: "/logs/gin.log"                  #设置 gin 框架的接口访问日志
   AppFileLogName: "/logs/low-file.log"    #设置项目运行时日志文件名，注意该名称不要与上一条重复 ,避免和 gin 框架的日志掺杂一起，造成混乱。

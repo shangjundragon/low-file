@@ -26,6 +26,9 @@ func main() {
 }
 
 func afterRun(port string) {
+	if viper.GetBool("AutoOpenBrowser") == false {
+		return
+	}
 	serverURL := fmt.Sprintf("http://localhost%s", port)
 	global.Logger.Info("- " + serverURL)
 	if runtime.GOOS == "windows" {
