@@ -173,6 +173,7 @@ function handleCheckRow(rowKeys) {
 
 onMounted(async () => {
   tableMaxHeight.value = tableScrollbarRef.value.clientHeight - 100;
+  await getList()
   request({
     url: '/externalLink',
     method: 'get',
@@ -187,7 +188,7 @@ onMounted(async () => {
     })];
     externalLink.value = link;
   })
-  await getList()
+
 
 })
 const currentFolder = ref(undefined);
