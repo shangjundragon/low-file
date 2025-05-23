@@ -19,40 +19,27 @@ func CreateDir(c *gin.Context) {
 
 	var bo CreateDirBo
 	err := c.ShouldBind(&bo)
+
 	traceLogger := global.GetZapTraceLogger(c).With(zap.String("dir", bo.Dir))
+	responseHandler := global.NewResponseHandler(c, traceLogger)
 	if strutil.IsBlank(bo.Dir) || err != nil {
-		traceLogger.Error("参数绑定失败", zap.Error(err))
-		c.JSON(200, gin.H{
-			"code": 500,
-			"msg":  "参数缺失或格式错误",
-		})
+		global.ResFail(responseHandler.WithMsg("参数绑定失败").WithError(err))
 		return
 	}
 	var fullPath string
 	fullPath, err = utils.ValidatePath(bo.Dir)
 	if err != nil {
-		traceLogger.Error("非法访问")
-		c.JSON(200, gin.H{
-			"code": 500,
-			"msg":  "非法访问",
-		})
+		global.ResFail(responseHandler.WithMsg("非法访问").WithError(err))
 		return
 	}
 
 	// 4. 创建目录
 	if err := os.MkdirAll(fullPath, os.ModePerm); err != nil {
-		traceLogger.Error("目录创建失败")
-		c.JSON(200, gin.H{
-			"code": 500,
-			"msg":  "目录创建失败",
-		})
+		global.ResFail(responseHandler.WithMsg("目录创建失败").WithError(err))
 		return
 	}
-	traceLogger.Info("创建文件夹")
+	traceLogger.Info("目录创建成功")
 	// 5. 成功响应
-	c.JSON(200, gin.H{
-		"code": 200,
-		"msg":  "目录创建成功",
-		"path": fullPath,
-	})
+	global.ResOk(responseHandler.WithMsg("目录创建成功").WithData(fullPath))
+
 }

@@ -48,7 +48,7 @@ func setupDefaults() {
 	viper.SetDefault("ExternalLink", []string{})
 	// 设置日志相关配置的默认值
 	viper.SetDefault("Logs.GinLogName", "/logs/gin.log")
-	viper.SetDefault("Logs.LowFileLogName", "/logs/low-file.log")
+	viper.SetDefault("Logs.AppFileLogName", "/logs/low-file.log")
 	viper.SetDefault("Logs.TextFormat", "json")
 	viper.SetDefault("Logs.TimePrecision", "millisecond")
 	viper.SetDefault("Logs.MaxSize", 10)   // 单位：MB
