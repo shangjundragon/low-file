@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -11,8 +12,11 @@ import (
 	"runtime"
 )
 
+//go:embed public/*
+var embeddedFS embed.FS
+
 func main() {
-	router := routers.InitRouter()
+	router := routers.InitRouter(embeddedFS)
 	port := viper.GetString("Port")
 	// 在 Goroutine 中启动服务器（避免阻塞）
 	go func() {

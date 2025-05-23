@@ -32,7 +32,8 @@ export default defineConfig({
             include: [/\.vue$/, /\.vue\?vue/, /\.jsx$/]
         })],
     build: {
-        outDir: '../public',
+        outDir: '../main/public',
+        emptyOutDir: true,
     },
     server: {
         open: true,
