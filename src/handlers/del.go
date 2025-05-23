@@ -16,8 +16,7 @@ type FilePathBo struct {
 func Del(c *gin.Context) {
 	var bo FilePathBo
 	err := c.ShouldBind(&bo)
-	responseHandler, traceLogger := global.GetLoggerAndResponseHandler(c)
-	traceLogger.With(zap.String("filePath", bo.FilePath))
+	responseHandler, _ := global.GetLoggerAndResponseHandler(c, zap.String("filePath", bo.FilePath))
 	if strutil.IsBlank(bo.FilePath) || err != nil {
 		global.ResFail(responseHandler.WithMsg("参数错误"))
 		return

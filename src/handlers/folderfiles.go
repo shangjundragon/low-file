@@ -14,8 +14,8 @@ type FolderFilesBo struct {
 func FolderFiles(c *gin.Context) {
 	var bo FolderFilesBo
 	err := c.ShouldBind(&bo)
-	logger := global.GetZapTraceLogger(c).With(zap.String("CurrentFolder", bo.CurrentFolder))
-	responseHandler := global.NewResponseHandler(c, logger)
+
+	responseHandler, _ := global.GetLoggerAndResponseHandler(c, zap.String("CurrentFolder", bo.CurrentFolder))
 	if err != nil {
 		global.ResFail(responseHandler.WithMsg("参数绑定失败").WithError(err))
 		return

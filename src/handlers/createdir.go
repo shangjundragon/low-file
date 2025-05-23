@@ -19,8 +19,7 @@ func CreateDir(c *gin.Context) {
 
 	var bo CreateDirBo
 	err := c.ShouldBind(&bo)
-	responseHandler, traceLogger := global.GetLoggerAndResponseHandler(c)
-	traceLogger.With(zap.String("dir", bo.Dir))
+	responseHandler, _ := global.GetLoggerAndResponseHandler(c, zap.String("dir", bo.Dir))
 
 	if strutil.IsBlank(bo.Dir) || err != nil {
 		global.ResFail(responseHandler.WithMsg("参数绑定失败").WithError(err))
@@ -38,7 +37,6 @@ func CreateDir(c *gin.Context) {
 		global.ResFail(responseHandler.WithMsg("目录创建失败").WithError(err))
 		return
 	}
-	traceLogger.Info("目录创建成功")
 	// 5. 成功响应
 	global.ResOk(responseHandler.WithMsg("目录创建成功").WithData(fullPath))
 

@@ -15,16 +15,18 @@ func InitRouter() *gin.Engine {
 	}
 	engine := gin.Default()
 
-	middlerware.MiddleWare(engine)
 	engine.StaticFile("/", "./public/index.html")
 	engine.Static("/static", "./public")
 	engine.StaticFS("/dir", http.Dir(global.RootDir))
+	middlerware.MiddleWare(engine)
 
 	engine.GET("/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
 	})
+
+	engine.POST("/token", handlers.Token)
 
 	// 查看该目录下的所有文件/夹
 	engine.POST("/folderFiles", handlers.FolderFiles)

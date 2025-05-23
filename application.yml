@@ -1,5 +1,5 @@
-# 公开访问
-public: true
+# 公开访问 访问任何资源都不需要令牌
+Public: false
 
 # 文件目录 默认程序启动目录下的uploads
 Dir: 
@@ -17,7 +17,7 @@ Port: ":23547"
 AutoOpenBrowser: false
 
 # 同名文件覆盖上传
-Overwrite: true
+Overwrite: false
 
 
 Logs:

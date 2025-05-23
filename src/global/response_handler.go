@@ -17,13 +17,6 @@ type ResponseHandler struct {
 	err     error
 }
 
-func NewResponseHandler(c *gin.Context, l *zap.Logger) *ResponseHandler {
-	return &ResponseHandler{
-		context: c,
-		logger:  l,
-	}
-}
-
 func (rh *ResponseHandler) WithCode(code int) *ResponseHandler {
 	rh.code = code
 	return rh
@@ -39,6 +32,11 @@ func (rh *ResponseHandler) WithData(data interface{}) *ResponseHandler {
 }
 func (rh *ResponseHandler) WithError(err error) *ResponseHandler {
 	rh.err = err
+	return rh
+}
+
+func (rh *ResponseHandler) WithLogger(l *zap.Logger) *ResponseHandler {
+	rh.logger = l
 	return rh
 }
 
@@ -64,8 +62,8 @@ func ResFail(rh *ResponseHandler) {
 		"data": rh.data})
 }
 
-func GetLoggerAndResponseHandler(c *gin.Context) (*ResponseHandler, *zap.Logger) {
-	logger := GetZapTraceLogger(c)
-	resHandler := NewResponseHandler(c, logger)
+func GetLoggerAndResponseHandler(c *gin.Context, field ...zap.Field) (*ResponseHandler, *zap.Logger) {
+	logger := GetZapTraceLogger(c).With(field...)
+	resHandler := &ResponseHandler{context: c, logger: logger}
 	return resHandler, logger
 }

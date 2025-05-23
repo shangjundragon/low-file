@@ -9,10 +9,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-    /*if (!localStorage.getItem('authorization-token') && to.name !== 'login') {
+    if (!localStorage.getItem('authorization-token') && to.name !== 'login') {
         // 没登录跳转登录页
         return {name: 'login'};
-    }*/
+    }
     return true
 })
 

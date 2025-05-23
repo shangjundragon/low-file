@@ -61,7 +61,7 @@ function handleLogin() {
       return
     }
     const {data} = await request({
-      url: '/sys_auth/token',
+      url: '/token',
       method: 'POST',
       data: form.value
     })
@@ -69,7 +69,7 @@ function handleLogin() {
       window.$message.success('登录成功')
       localStorage.setItem('authorization-token', data.token);
       await router.push({
-        name: 'UseCount'
+        name: 'FileManage'
       })
     }
 

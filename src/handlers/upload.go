@@ -17,52 +17,51 @@ func UploadHandler(c *gin.Context) {
 	file, err := c.FormFile("file")
 	filename := c.PostForm("filename")
 
-	rc, logger := global.GetLoggerAndResponseHandler(c)
-	logger.With(zap.String("filename", filename))
+	responseHandler, _ := global.GetLoggerAndResponseHandler(c, zap.String("filename", filename))
 	if strutil.IsBlank(filename) {
-		global.ResFail(rc.WithMsg("无法获取文件名称"))
+		global.ResFail(responseHandler.WithMsg("无法获取文件名称"))
 		return
 	}
 
 	if err != nil {
-		global.ResFail(rc.WithMsg("无法获取上传文件").WithError(err))
+		global.ResFail(responseHandler.WithMsg("无法获取上传文件").WithError(err))
 		return
 	}
 
 	var fullPath string
 	fullPath, err = utils.ValidatePath(filename)
 	if err != nil {
-		global.ResFail(rc.WithMsg("非法访问").WithError(err))
+		global.ResFail(responseHandler.WithMsg("非法访问").WithError(err))
 		return
 	}
 
 	// 提取目录路径并创建
 	dirPath := filepath.Dir(fullPath)
 	if err := os.MkdirAll(dirPath, os.ModePerm); err != nil {
-		global.ResFail(rc.WithMsg("无法创建目录").WithError(err))
+		global.ResFail(responseHandler.WithMsg("无法创建目录").WithError(err))
 		return
 	}
 	// 检查是否存在同名文件
 	if viper.GetBool("Overwrite") == false {
 		if _, err := os.Stat(fullPath); err == nil {
 			// 文件已存在且不允许覆盖
-			global.ResFail(rc.WithMsg("存在同名文件").WithError(err))
+			global.ResFail(responseHandler.WithMsg("存在同名文件").WithError(err))
 			return
 		} else if !os.IsNotExist(err) {
 			// 检查文件状态时发生其他错误
-			global.ResFail(rc.WithMsg("检查文件状态失败").WithError(err))
+			global.ResFail(responseHandler.WithMsg("检查文件状态失败").WithError(err))
 			return
 		}
 	}
 	// 保存文件
 	if err := c.SaveUploadedFile(file, fullPath); err != nil {
-		global.ResFail(rc.WithMsg("文件保存失败").WithError(err))
+		global.ResFail(responseHandler.WithMsg("文件保存失败").WithError(err))
 		return
 	}
 	rel, err := filepath.Rel(global.RootDir, fullPath)
 	if err != nil {
-		global.ResFail(rc.WithMsg("获取相对路径失败").WithError(err))
+		global.ResFail(responseHandler.WithMsg("获取相对路径失败").WithError(err))
 		return
 	}
-	global.ResOk(rc.WithMsg("文件上传成功 filename=" + filename).WithData(rel))
+	global.ResOk(responseHandler.WithMsg("文件上传成功 filename=" + filename).WithData(rel))
 }

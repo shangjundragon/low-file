@@ -19,7 +19,7 @@ request.interceptors.response.use(async response => {
         return response.data
     }
     if (code === 401) {
-        window['$message'].error('请重新登录');
+        window['$message'].error(msg);
         localStorage.removeItem('authorization-token')
         await router.push({name: 'login'});
         return Promise.reject('无效的会话，或者会话已过期，请重新登录。')

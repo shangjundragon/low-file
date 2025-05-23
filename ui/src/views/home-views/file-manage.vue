@@ -326,8 +326,8 @@ function handleClickUpload() {
       const formData = new FormData()
       formData.append('file', options.file.file);
       const filename = currentFolder.value
-          ? `${currentFolder.value}/${options.file.file.name}`
-          : options.file.file.name;
+          ? `${currentFolder.value}/${options.file.name}`
+          : options.file.name;
       formData.append('filename', filename);
       const res = await request.loadingRequest({
         loadingBar,

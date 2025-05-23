@@ -11,6 +11,7 @@ specifiers:
   sass: ^1.86.3
   unplugin-auto-import: ^19.2.0
   unplugin-vue-components: ^28.5.0
+  uuid: ^11.1.0
   vfonts: ^0.0.3
   vite: ^6.3.5
   vue: ^3.5.13
@@ -23,6 +24,7 @@ dependencies:
   naive-ui: 2.41.0_vue@3.5.14
   unplugin-auto-import: 19.2.0
   unplugin-vue-components: 28.5.0_vue@3.5.14
+  uuid: 11.1.0
   vfonts: 0.0.3
   vue: 3.5.14
   vue-router: 4.5.1_vue@3.5.14
@@ -1825,6 +1827,11 @@ packages:
       escalade: 3.2.0
       picocolors: 1.1.1
     dev: true
+
+  /uuid/11.1.0:
+    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+    hasBin: true
+    dev: false
 
   /vdirs/0.1.8_vue@3.5.14:
     resolution: {integrity: sha512-H9V1zGRLQZg9b+GdMk8MXDN2Lva0zx72MPahDKc30v+DtwKjfyOSXWRIX4t2mhDubM1H09gPhWeth/BJWPHGUw==}

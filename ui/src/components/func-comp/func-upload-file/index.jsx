@@ -1,7 +1,7 @@
 import {ArchiveOutline} from '@vicons/ionicons5'
 import {ref} from "vue";
 import _ from 'lodash-es'
-
+import {v4 as uuidv4} from 'uuid'
 
 /**
  * 文件上传组件
@@ -42,15 +42,6 @@ export default (options) => {
         // 资源清理
         clearInterval(cleanupInterval)
         uploadContainer.value?.removeEventListener('paste', handlePaste)
-        releaseObjectURLs() // 释放内存
-    }
-
-
-    function releaseObjectURLs() {
-        // 释放所有Blob URL
-        fileList.value.forEach(file => {
-            if (file.url) URL.revokeObjectURL(file.url)
-        })
     }
 
     // 处理复制事件
@@ -63,7 +54,23 @@ export default (options) => {
         }
         const newFiles = Array.from(clipboardData.items)
             .filter(item => item.kind === 'file')
-            .map((item, index) => createFileObject(item.getAsFile(), index))
+            .map((item, index) => {
+                const file = item.getAsFile();
+                // 创建标准化文件对象
+                const uuid = uuidv4().substring(0, 8)
+                return {
+                    batchId: uuid,
+                    file,
+                    fullPath: '',
+                    id: uuid,
+                    name: `${uuid}_${file.name}`,
+                    percentage: 0,
+                    status: 'pending',
+                    thumbnailUri: null,
+                    type: file.type,
+                    url: null
+                }
+            })
 
         if (newFiles.length > 0) {
             event.preventDefault()
@@ -71,17 +78,6 @@ export default (options) => {
         }
     }
 
-    function createFileObject(file, index) {
-        const now = Date.now();
-        // 创建标准化文件对象
-        return {
-            key: now, // 生成唯一标识
-            name: `${now}_${file.name}`,
-            file,
-            status: 'pending',
-            url: URL.createObjectURL(file) // 生成预览URL
-        }
-    }
 
 
     /* 上传逻辑 */
@@ -90,9 +86,7 @@ export default (options) => {
             await uploadFunc(options)
             handleUploadComplete()
         } catch (error) {
-            console.error('上传失败:', error)
             loadingBar.error()
-            $message.error(error.message || '上传失败，请重试')
         }
     }
 
@@ -110,7 +104,6 @@ export default (options) => {
         // 重置上传状态
         uploadRef.value?.clear()
         fileList.value = []
-        releaseObjectURLs()
     }
 
 

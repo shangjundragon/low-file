@@ -5,6 +5,8 @@ import (
 	"go.uber.org/zap"
 )
 
+var OnLineToken = make(map[string]any)
+
 var Logger *zap.Logger
 
 // RootDir 文件存储根路径

@@ -42,12 +42,21 @@ func setupDefaults() {
 	}
 
 	defaultUploadsDir := filepath.Clean(filepath.Join(workDir, "uploads"))
+	viper.SetDefault("Public", false)
 	viper.SetDefault("AppDebug", false)
 	viper.SetDefault("Dir", defaultUploadsDir)
 	viper.SetDefault("Port", ":23547")
 	viper.SetDefault("ExternalLink", []string{})
 	viper.SetDefault("AutoOpenBrowser", true)
 	viper.SetDefault("Overwrite", false)
+	viper.SetDefault("Username", "admin")
+	viper.SetDefault("Password", "123456")
+	viper.SetDefault("JwtSecret", "xclvnjkweryisdlfmnvcv")
+
+	// 接口白名单
+	viper.Set("WhitePath", []string{
+		"/token",
+	})
 	// 设置日志相关配置的默认值
 	viper.SetDefault("Logs.GinLogName", "/logs/gin.log")
 	viper.SetDefault("Logs.AppFileLogName", "/logs/low-file.log")

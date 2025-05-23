@@ -26,11 +26,11 @@ func main() {
 }
 
 func afterRun(port string) {
+	serverURL := fmt.Sprintf("http://localhost%s", port)
+	global.Logger.Info("- " + serverURL)
 	if viper.GetBool("AutoOpenBrowser") == false {
 		return
 	}
-	serverURL := fmt.Sprintf("http://localhost%s", port)
-	global.Logger.Info("- " + serverURL)
 	if runtime.GOOS == "windows" {
 		// 构造 cmd 命令
 		cmd := exec.Command("cmd", "/c", "start", serverURL)
