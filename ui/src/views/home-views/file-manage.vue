@@ -44,9 +44,53 @@
     </div>
 
     <div ref="tableScrollbar" style="flex: 1;" class="fx fx-gp05">
-      <n-data-table class="fx-1" :max-height="tableMaxHeight" :columns="columns" :data="dataList"/>
+      <n-data-table @update:checked-row-keys="handleCheckRow" :row-key="rowKey" class="fx-1"
+                    :max-height="tableMaxHeight" :columns="columns" :data="dataList"/>
+      <div v-if="checkedRowKeys.length > 0" class="fx-column fx-gp10 al-ct"
+           style="width: 250px;height: 100%;border: 1px solid #ccc;border-radius: 4px;padding: 0.5rem 1rem">
 
-      <div v-if="selectFile" class="fx-column fx-gp10 al-ct"
+        <div class="fs ju-fe">
+          <n-icon size="40" style="float: right;cursor: pointer">
+            <Close @click="clearSelectFile"/>
+          </n-icon>
+        </div>
+
+        <n-button @click="handleClickCheckRowDownload" block size="small" type="primary">
+          下载
+          <template #icon>
+            <n-icon size="20">
+              <CloudDownload/>
+            </n-icon>
+          </template>
+        </n-button>
+        <n-button :disabled="checkedRowKeys.length > 1" @click="handleClickCheckRowShare" block size="small"
+                  type="primary">分享
+          <template #icon>
+            <n-icon size="20">
+              <ShareSocial/>
+            </n-icon>
+          </template>
+        </n-button>
+        <n-button :disabled="checkedRowKeys.length > 1" @click="handleClickCheckRowPreview" block size="small"
+                  type="primary">
+          预览
+          <template #icon>
+            <n-icon size="20">
+              <Eye/>
+            </n-icon>
+          </template>
+        </n-button>
+
+        <n-button @click="handleClickCheckRowDelete" block size="small" type="error" ghost>删除
+          <template #icon>
+            <n-icon size="20">
+              <TrashBin/>
+            </n-icon>
+          </template>
+        </n-button>
+
+      </div>
+      <div v-if="checkedRowKeys.length === 0 && selectFile" class="fx-column fx-gp10 al-ct"
            style="width: 250px;height: 100%;border: 1px solid #ccc;border-radius: 4px;padding: 0.5rem 1rem">
 
         <div class="fs ju-fe">
@@ -117,6 +161,15 @@ const externalLink = ref(undefined);
 const externalLinkOptions = ref([])
 const tableScrollbarRef = useTemplateRef('tableScrollbar');
 const tableMaxHeight = ref(100);
+const checkedRowKeys = ref([]);
+
+function rowKey(row) {
+  return row.filePath
+}
+
+function handleCheckRow(rowKeys) {
+  checkedRowKeys.value = rowKeys
+}
 
 onMounted(async () => {
   tableMaxHeight.value = tableScrollbarRef.value.clientHeight - 100;
@@ -162,9 +215,12 @@ function handleClickName(row) {
     // 点击的是文件夹 当前路径修改为这个文件夹
     currentFolder.value = row.filePath;
     breadcrumbs.value = row.filePath.split('/')
+    checkedRowKeys.value = []
     getList()
   }
   if (row.type === 'file') {
+    // 清空选择的row
+    checkedRowKeys.value = []
     // 点击的是文件，右侧显示操作栏
     selectFile.value = row
   }
@@ -202,6 +258,9 @@ async function handleClickDeleteFolder(row) {
 }
 
 const columns = [
+  {
+    type: 'selection',
+  },
   {
     title: '文件名', key: 'name', render: (row) => {
       return <div onClick={() => handleClickName(row)} style="cursor: pointer;width: 100%"
@@ -350,6 +409,31 @@ function clearSelectFile() {
   selectFile.value = undefined;
 }
 
+async function handleClickCheckRowDelete() {
+  const checkedData = dataList.value.filter(item => checkedRowKeys.value.includes(item.filePath));
+  await funcModalConfirm({modal, text: '确认删除所选中的文件吗？'})
+  const failDataName = []
+  for (const data of checkedData) {
+    try {
+      await request({
+        url: '/del',
+        method: 'post',
+        data: {
+          filePath: data.filePath
+        }
+      });
+    } catch (e) {
+      console.error(e)
+      failDataName.push(data.name)
+    }
+  }
+  checkedRowKeys.value = []
+  if (failDataName.length > 0) {
+    $message.error(`删除失败：${failDataName.join(', ')}`)
+  }
+  getList()
+}
+
 async function handleClickDelete() {
   await funcModalConfirm({modal})
   await request.loadingRequest({
@@ -382,6 +466,22 @@ const selectFileLink = computed(() => {
   return `${externalLink.value}/${encodeURIComponent(selectFile.value.filePath)}`
 })
 
+function getFileLink(data) {
+  return `${externalLink.value}/${encodeURIComponent(data.filePath)}`
+}
+
+function handleClickCheckRowDownload() {
+  const datas = dataList.value.filter(f => checkedRowKeys.value.includes(f.filePath));
+  if (datas.some(s => s.type === 'folder')) {
+    $message.error('文件夹不支持下载');
+    return
+  }
+  if (datas.length === 1) {
+    window.open(getFileLink(datas[0]), '_blank');
+    return;
+  }
+
+}
 
 function handleClickDownload() {
   const link = `${selectFileLink.value}?action=attachment`
@@ -393,22 +493,46 @@ function handleClickPreview() {
   window.open(link, '_blank');
 }
 
-async function handleClickShare() {
-  const link = selectFileLink.value;
+async function handleClickCheckRowShare() {
+  const data = dataList.value.find(f => f.filePath === checkedRowKeys.value[0]);
+  if (data.type === 'folder') {
+    $message.error('文件夹不支持分享');
+    return
+  }
+  const link = getFileLink(data);
+  copyText(link)
 
+}
+
+async function copyText(text) {
   try {
     // 优先使用 Clipboard API（HTTPS/localhost 环境）
     if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(link);
-      $message.success('已复制分享链接到剪贴板');
+      await navigator.clipboard.writeText(text);
+      $message.success('已复制到剪贴板');
     } else {
       // 回退方案：使用 document.execCommand（兼容 HTTP 内网环境）
-      fallbackCopyTextToClipboard(link);
+      fallbackCopyTextToClipboard(text);
     }
   } catch (err) {
     console.error('复制失败:', err);
-    $message.error('无法复制分享链接');
+    $message.error('无法复制');
   }
+}
+
+function handleClickCheckRowPreview() {
+  const data = dataList.value.find(f => f.filePath === checkedRowKeys.value[0]);
+  if (data.type === 'folder') {
+    $message.error('文件夹不支持预览');
+    return
+  }
+  const link = getFileLink(data);
+  window.open(link, '_blank');
+}
+
+async function handleClickShare() {
+  const link = selectFileLink.value;
+  copyText(link)
 }
 
 // 回退方案：兼容 HTTP 内网环境

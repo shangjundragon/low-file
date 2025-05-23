@@ -19,14 +19,25 @@ func ossMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		// 查找有没有这个文件
-		if _, err := os.Stat(fullPath); err == nil {
-			// 文件存在
-			c.File(fullPath)
+		var info os.FileInfo
+		info, err = os.Stat(fullPath)
+		if err != nil {
+			// 不存在
+			c.Next()
+			return
+		}
+
+		// 文件夹还是文件？
+		if info.IsDir() {
+			global.ResFail(responseHandler.WithMsg("不可访问目录"))
 			c.Abort()
 			return
 		}
 
-		c.Next()
+		// 文件
+		c.File(fullPath)
+		c.Abort()
+		return
+
 	}
 }

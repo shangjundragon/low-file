@@ -1,7 +1,7 @@
 # 公开访问 访问任何资源都不需要令牌
 Public: false
 
-# 文件目录 默认程序启动目录下的uploads
+# 文件目录必须为绝对路径 不配置为程序启动目录下的uploads
 Dir: 
 
 # debug 模式
