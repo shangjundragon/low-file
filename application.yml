@@ -9,6 +9,7 @@ AppDebug: true
 
 # 文件访问外链数组
 ExternalLink:
+  - "http://10.1.62.180:23547"
 
 # 项目运行端口
 Port: ":23547"

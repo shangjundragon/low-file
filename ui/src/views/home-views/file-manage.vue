@@ -127,8 +127,8 @@ onMounted(async () => {
     const protocol = window.location.protocol; // 获取协议
     const host = window.location.host; // 获取主机名和端口号
     const link = import.meta.env.MODE === 'production'
-        ? `${protocol}//${host}/dir`
-        : `${import.meta.env.VITE_BASE_API}/dir`;
+        ? `${protocol}//${host}`
+        : `${import.meta.env.VITE_BASE_API}`;
     externalLinkOptions.value = [{label: link, value: link}, ...res.data.map(m => {
       return {label: m, value: m}
     })];
@@ -334,9 +334,7 @@ function handleClickUpload() {
         method: 'post',
         url: '/upload',
         data: formData,
-
       });
-      console.log('res', res)
       return res
     },
     emits: {

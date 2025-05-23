@@ -28,10 +28,10 @@ func init() {
 	setupDefaults()
 	// 加载application.yml配置
 	loadConfiguration()
+	// 初始化日志
+	global.Logger = factory.CreateZapFactory(factory.ZapLogHandler)
 	// 验证存储目录
 	validateAndCreateUploadDir()
-	// 初始化日志
-	initializeLogger()
 
 }
 
@@ -103,28 +103,4 @@ func validateAndCreateUploadDir() {
 	}
 
 	global.RootDir = uploadDir
-}
-
-func initializeLogger() {
-	/*var logger *zap.Logger
-	var err error
-	var config zap.Config
-	if viper.GetBool("AppDebug") {
-		config = zap.NewDevelopmentConfig()
-	} else {
-		config = zap.NewProductionConfig()
-	}
-	config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout(time.DateTime)
-
-	logger, err = config.Build()
-
-	if err != nil {
-		log.Fatalf("日志初始化失败: %v", err)
-	}
-
-	// 替换全局 logger 并确保刷新缓冲日志（如果有）
-	zap.ReplaceGlobals(logger)
-	global.Logger = logger*/
-
-	global.Logger = factory.CreateZapFactory(factory.ZapLogHandler)
 }

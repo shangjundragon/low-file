@@ -54,7 +54,7 @@ export default (options) => {
         }
         const newFiles = Array.from(clipboardData.items)
             .filter(item => item.kind === 'file')
-            .map((item, index) => {
+            .map((item) => {
                 const file = item.getAsFile();
                 // 创建标准化文件对象
                 const uuid = uuidv4().substring(0, 8)

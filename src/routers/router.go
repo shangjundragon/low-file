@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"low-file/src/common/middlerware"
-	"low-file/src/global"
 	"low-file/src/handlers"
 	"net/http"
 )
@@ -17,7 +16,6 @@ func InitRouter() *gin.Engine {
 
 	engine.StaticFile("/", "./public/index.html")
 	engine.Static("/static", "./public")
-	engine.StaticFS("/dir", http.Dir(global.RootDir))
 	middlerware.MiddleWare(engine)
 
 	engine.GET("/ping", func(context *gin.Context) {
