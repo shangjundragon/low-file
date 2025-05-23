@@ -19,9 +19,9 @@ func CreateDir(c *gin.Context) {
 
 	var bo CreateDirBo
 	err := c.ShouldBind(&bo)
+	responseHandler, traceLogger := global.GetLoggerAndResponseHandler(c)
+	traceLogger.With(zap.String("dir", bo.Dir))
 
-	traceLogger := global.GetZapTraceLogger(c).With(zap.String("dir", bo.Dir))
-	responseHandler := global.NewResponseHandler(c, traceLogger)
 	if strutil.IsBlank(bo.Dir) || err != nil {
 		global.ResFail(responseHandler.WithMsg("参数绑定失败").WithError(err))
 		return

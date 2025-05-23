@@ -55,8 +55,17 @@ func ResOk(rh *ResponseHandler) {
 
 func ResFail(rh *ResponseHandler) {
 	rh.logger.Error(rh.msg, zap.Any("data", rh.data), zap.Error(rh.err))
+	if rh.code == 0 {
+		rh.code = 500
+	}
 	rh.context.JSON(http.StatusOK, gin.H{
-		"code": 500,
+		"code": rh.code,
 		"msg":  rh.msg,
 		"data": rh.data})
+}
+
+func GetLoggerAndResponseHandler(c *gin.Context) (*ResponseHandler, *zap.Logger) {
+	logger := GetZapTraceLogger(c)
+	resHandler := NewResponseHandler(c, logger)
+	return resHandler, logger
 }

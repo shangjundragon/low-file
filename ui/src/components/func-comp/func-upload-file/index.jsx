@@ -72,10 +72,11 @@ export default (options) => {
     }
 
     function createFileObject(file, index) {
+        const now = Date.now();
         // 创建标准化文件对象
         return {
-            key: Date.now(), // 生成唯一标识
-            name: file.name,
+            key: now, // 生成唯一标识
+            name: `${now}_${file.name}`,
             file,
             status: 'pending',
             url: URL.createObjectURL(file) // 生成预览URL
