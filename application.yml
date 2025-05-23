@@ -2,10 +2,16 @@
 Public: false
 
 # 文件目录必须为绝对路径 不配置为程序启动目录下的uploads
-Dir: 
+Dir:
 
 # debug 模式
 AppDebug: true
+
+# 系统用户名
+Username:
+
+# 密码
+Password:
 
 # 文件访问外链数组
 ExternalLink:
@@ -19,6 +25,9 @@ AutoOpenBrowser: false
 
 # 同名文件覆盖上传
 Overwrite: false
+
+# jwt密钥
+JwtSecret: bsdhfsdalkfjlkjlkjsdfsdf
 
 
 Logs:
