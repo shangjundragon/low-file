@@ -1,3 +1,6 @@
+# 公开访问
+public: true
+
 # 文件目录 默认程序启动目录下的uploads
 Dir: 
 
@@ -7,12 +10,15 @@ AppDebug: true
 # 文件访问外链数组
 ExternalLink:
 
+# 项目运行端口
 Port: ":23547"
 
 # windows启动后自动打开浏览器
 AutoOpenBrowser: false
+
 # 同名文件覆盖上传
 Overwrite: true
+
 
 Logs:
   GinLogName: "/logs/gin.log"                  #设置 gin 框架的接口访问日志
