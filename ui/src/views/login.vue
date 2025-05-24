@@ -7,7 +7,7 @@
       <n-form style="width: 100%" ref="formRef" :model="form" :rules="rules" label-placement="left" label-width="100px">
 
         <n-form-item path="username">
-          <n-input @keyup.enter="handleLogin" v-model:value.trim="form.username" placeholder="请输入用户名"/>
+          <n-input autofocus @keyup.enter="handleLogin" v-model:value.trim="form.username" placeholder="请输入用户名"/>
         </n-form-item>
         <n-form-item path="password">
           <n-input @keyup.enter="handleLogin"
