@@ -16,7 +16,7 @@ type FilePathBo struct {
 func Del(c *gin.Context) {
 	var bo FilePathBo
 	err := c.ShouldBind(&bo)
-	responseHandler, _ := global.GetLoggerAndResponseHandler(c, zap.String("filePath", bo.FilePath))
+	responseHandler, logger := global.GetLoggerAndResponseHandler(c, zap.String("filePath", bo.FilePath))
 	if strutil.IsBlank(bo.FilePath) || err != nil {
 		global.ResFail(responseHandler.WithMsg("参数错误"))
 		return
@@ -72,6 +72,24 @@ func Del(c *gin.Context) {
 			global.ResFail(responseHandler.WithMsg("删除文件失败").WithError(err))
 			return
 		}
+
+		// 删除file_record
+		result, err := global.SQLite.Exec(`DELETE FROM file_records WHERE file_path = ?`, bo.FilePath)
+		if err != nil {
+			global.ResFail(responseHandler.WithMsg("删除文件记录失败").WithError(err))
+			return
+		}
+
+		// 获取受影响的行数
+		rowsAffected, err := result.RowsAffected()
+		if err != nil {
+			global.ResFail(responseHandler.WithMsg("获取删除记录数失败").WithError(err))
+			return
+		}
+
+		logger.Info("删除文件记录",
+			zap.Int64("deleted_rows", rowsAffected), // 记录删除数量
+			zap.String("file_path", bo.FilePath))
 	}
 	global.ResOk(responseHandler.WithMsg("删除文件/夹成功"))
 }

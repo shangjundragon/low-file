@@ -66,7 +66,7 @@ function handleLogin() {
       window.$message.success('登录成功')
       localStorage.setItem('authorization-token', data.token);
       await router.push({
-        name: 'FileManage'
+        name: 'Index'
       })
     }
 

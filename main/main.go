@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	_ "github.com/glebarez/go-sqlite"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	_ "low-file/src/bootstrap"

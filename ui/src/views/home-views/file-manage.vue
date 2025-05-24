@@ -1,5 +1,5 @@
 <template>
-  <div class="fx-column page-container fx-gp05" style="padding: 0.5rem 1rem;;">
+  <div class="fx-column page-container fx-gp05" style="padding: 0.5rem 1rem;">
     <div class="fx al-ct ju-sb">
       <n-breadcrumb class="fx al-ct">
         <n-breadcrumb-item>
@@ -39,7 +39,6 @@
             </n-icon>
           </template>
         </n-button>
-        <n-select style="width: 200px" size="small" v-model:value="externalLink" :options="externalLinkOptions"/>
       </div>
     </div>
 
@@ -153,12 +152,11 @@ import {AddSharp, Close, CloudDownload, CloudUpload, Eye, Refresh, ShareSocial, 
 import {useLoadingBar, useModal} from 'naive-ui'
 import funcUploadFile from "@/src/components/func-comp/func-upload-file/index.jsx";
 import funcModalConfirm from "@/src/components/func-comp/func-modal-confirm/index.jsx";
-import router from "@/src/router/index.js";
+import {copyText} from "@/src/common/utils.js";
 
 const modal = useModal();
 const loadingBar = useLoadingBar();
-const externalLink = ref(undefined);
-const externalLinkOptions = ref([])
+import SysStore from "@/src/store/sys-store.js";
 const tableScrollbarRef = useTemplateRef('tableScrollbar');
 const tableMaxHeight = ref(100);
 const checkedRowKeys = ref([]);
@@ -176,26 +174,10 @@ function handleCheckRow(rowKeys) {
 onMounted(async () => {
   tableMaxHeight.value = tableScrollbarRef.value.clientHeight - 100;
   await getList()
-  request({
-    url: '/externalLink',
-    method: 'get',
-  }).then((res) => {
-    const protocol = window.location.protocol; // 获取协议
-    const host = window.location.host; // 获取主机名和端口号
-    const link = import.meta.env.MODE === 'production'
-        ? `${protocol}//${host}`
-        : `${import.meta.env.VITE_BASE_API}`;
-    externalLinkOptions.value = [{label: link, value: link}, ...res.data.map(m => {
-      return {label: m, value: m}
-    })];
-    externalLink.value = link;
-  })
-
 
 })
 const currentFolder = ref(undefined);
 watch(() => currentFolder.value, val => {
-  console.log('currentFolder', currentFolder.value);
   selectFile.value = undefined
 })
 
@@ -345,7 +327,7 @@ function handleClickCreateFolder() {
     },
     preset: 'card',
     onAfterEnter() {
-      console.log('inputRef', inputRef.value.focus())
+      inputRef.value.focus()
     },
     content: () => {
       return <div class="fx-column al-ct fx-gp05">
@@ -467,11 +449,11 @@ function handleDownloadQRCode() {
 }
 
 const selectFileLink = computed(() => {
-  return `${externalLink.value}/${encodeURIComponent(selectFile.value.filePath)}`
+  return `${SysStore.value.externalLink}/${encodeURIComponent(selectFile.value.filePath)}`
 })
 
 function getFileLink(data) {
-  return `${externalLink.value}/${encodeURIComponent(data.filePath)}`
+  return `${SysStore.value.externalLink}/${encodeURIComponent(data.filePath)}`
 }
 
 function handleClickCheckRowDownload() {
@@ -508,21 +490,7 @@ async function handleClickCheckRowShare() {
 
 }
 
-async function copyText(text) {
-  try {
-    // 优先使用 Clipboard API（HTTPS/localhost 环境）
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(text);
-      $message.success('已复制到剪贴板');
-    } else {
-      // 回退方案：使用 document.execCommand（兼容 HTTP 内网环境）
-      fallbackCopyTextToClipboard(text);
-    }
-  } catch (err) {
-    console.error('复制失败:', err);
-    $message.error('无法复制');
-  }
-}
+
 
 function handleClickCheckRowPreview() {
   const data = dataList.value.find(f => f.filePath === checkedRowKeys.value[0]);
@@ -539,34 +507,6 @@ async function handleClickShare() {
   copyText(link)
 }
 
-// 回退方案：兼容 HTTP 内网环境
-function fallbackCopyTextToClipboard(text) {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
-  textArea.style.position = "fixed"; // 避免影响页面布局
-  textArea.style.top = "0";
-  textArea.style.left = "0";
-  textArea.style.width = "2em";
-  textArea.style.height = "2em";
-  textArea.style.padding = "0";
-  textArea.style.border = "none";
-  textArea.style.outline = "none";
-  textArea.style.boxShadow = "none";
-  textArea.style.background = "transparent";
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-
-  try {
-    document.execCommand('copy');
-    $message.success('已复制分享链接到剪贴板');
-  } catch (err) {
-    console.error('复制失败（回退方案）:', err);
-    $message.error('无法复制分享链接');
-  } finally {
-    document.body.removeChild(textArea);
-  }
-}
 </script>
 <style scoped lang="scss">
 

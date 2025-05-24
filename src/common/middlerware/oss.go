@@ -11,6 +11,10 @@ import (
 func ossMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ossPath := c.Request.URL.Path
+		if ossPath == "/" {
+			c.Next()
+			return
+		}
 		responseHandler, _ := global.GetLoggerAndResponseHandler(c, zap.String("ossPath", ossPath))
 
 		fullPath, err := utils.ValidatePath(ossPath)

@@ -6,10 +6,16 @@ export default [
         children: [
             {
                 path: '',
+                component: () => import('@/src/views/home-views/index.vue'),
+                name: 'Index',
+                meta: {title: '首页',}
+            },
+            {
+                path: 'file-manage',
                 component: () => import('@/src/views/home-views/file-manage.vue'),
                 name: 'FileManage',
                 meta: {title: '文件管理',}
-            }
+            },
 
         ]
     },

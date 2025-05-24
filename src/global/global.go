@@ -1,6 +1,7 @@
 package global
 
 import (
+	"database/sql"
 	"go.uber.org/zap"
 	"io/fs"
 )
@@ -9,8 +10,8 @@ var OnLineToken = make(map[string]any)
 
 var Logger *zap.Logger
 
-// RootDir 文件存储根路径
-var RootDir string
+// RootUploadsDir 文件存储根路径
+var RootUploadsDir string
 
 // BasePath 程序允许路径
 var BasePath string
@@ -20,3 +21,6 @@ var StaticFs fs.FS
 
 // IndexHtml 前端首页index.html
 var IndexHtml []byte
+
+// SQLite sqlite数据库实例
+var SQLite *sql.DB

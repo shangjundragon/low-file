@@ -9,6 +9,7 @@ import (
 	"low-file/src/global"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 func UploadHandler(c *gin.Context) {
@@ -58,9 +59,23 @@ func UploadHandler(c *gin.Context) {
 		global.ResFail(responseHandler.WithMsg("文件保存失败").WithError(err))
 		return
 	}
-	rel, err := filepath.Rel(global.RootDir, fullPath)
+	rel, err := filepath.Rel(global.RootUploadsDir, fullPath)
 	if err != nil {
 		global.ResFail(responseHandler.WithMsg("获取相对路径失败").WithError(err))
+		return
+	}
+	// 数据库添加记录
+	fileName := filepath.Base(filename)
+	filePath := filename
+	fileSize := file.Size
+	createTime := time.Now().UnixMilli()
+	_, err = global.SQLite.Exec(`
+		insert into file_records
+		(file_name, file_path, file_size, create_time)
+		values (?,?,?,?)
+	`, fileName, filePath, fileSize, createTime)
+	if err != nil {
+		global.ResFail(responseHandler.WithMsg("文件记录失败").WithError(err))
 		return
 	}
 	global.ResOk(responseHandler.WithMsg("文件上传成功 filename=" + filename).WithData(rel))

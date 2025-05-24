@@ -41,5 +41,8 @@ func InitRouter() *gin.Engine {
 	engine.GET("/externalLink", handlers.ExternalLink)
 	// 删除文件/夹
 	engine.POST("/del", handlers.Del)
+	// 文件记录列表
+	engine.POST("/file_records_list", handlers.FileRecordList)
+
 	return engine
 }
