@@ -31,18 +31,10 @@ func authMiddleware() gin.HandlerFunc {
 
 		secret := []byte(viper.GetString("JwtSecret"))
 		tokenString := c.GetHeader("Authorization")
-		resHandler, logger := global.GetLoggerAndResponseHandler(c, zap.String("Authorization", tokenString))
+		resHandler, _ := global.GetLoggerAndResponseHandler(c, zap.String("Authorization", tokenString))
 		resHandler.WithCode(401)
 		if strutil.IsBlank(tokenString) {
 			global.ResFail(resHandler.WithMsg("未提供令牌"))
-			return
-		}
-
-		_, exists := global.OnLineToken[tokenString]
-		if !exists {
-			logger.Info("OnLineToken中不存在")
-			global.ResFail(resHandler.WithMsg("令牌已失效"))
-			c.Abort()
 			return
 		}
 
@@ -69,7 +61,6 @@ func authMiddleware() gin.HandlerFunc {
 		} else {
 			errMsg = "令牌处理异常"
 		}
-		delete(global.OnLineToken, tokenString)
 		global.ResFail(resHandler.WithMsg(errMsg))
 		c.Abort()
 		return

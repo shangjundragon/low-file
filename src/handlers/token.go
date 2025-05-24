@@ -32,12 +32,11 @@ func Token(c *gin.Context) {
 	secret := []byte(viper.GetString("JwtSecret"))
 	// 创建Claims
 	claims := &jwt.RegisteredClaims{
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(2 * time.Hour)),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(secret)
-	global.OnLineToken[tokenString] = gin.H{"tokenString": tokenString}
 	global.ResOk(resHandler.WithData(gin.H{"token": tokenString}).WithMsg("登录成功"))
 
 }

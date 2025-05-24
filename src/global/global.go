@@ -6,8 +6,6 @@ import (
 	"io/fs"
 )
 
-var OnLineToken = make(map[string]any)
-
 var Logger *zap.Logger
 
 // RootUploadsDir 文件存储根路径
