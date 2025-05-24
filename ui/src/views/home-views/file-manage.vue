@@ -162,7 +162,9 @@ const externalLinkOptions = ref([])
 const tableScrollbarRef = useTemplateRef('tableScrollbar');
 const tableMaxHeight = ref(100);
 const checkedRowKeys = ref([]);
-
+function clearCheckedRowKeys() {
+  checkedRowKeys.value = [];
+}
 function rowKey(row) {
   return row.filePath
 }
@@ -216,15 +218,15 @@ function handleClickName(row) {
     // 点击的是文件夹 当前路径修改为这个文件夹
     currentFolder.value = row.filePath;
     breadcrumbs.value = row.filePath.split('/')
-    checkedRowKeys.value = []
+
     getList()
   }
   if (row.type === 'file') {
-    // 清空选择的row
-    checkedRowKeys.value = []
     // 点击的是文件，右侧显示操作栏
     selectFile.value = row
   }
+
+  clearCheckedRowKeys()
 }
 
 const svgMap = new Map([
@@ -428,7 +430,7 @@ async function handleClickCheckRowDelete() {
       failDataName.push(data.name)
     }
   }
-  checkedRowKeys.value = []
+  clearCheckedRowKeys()
   if (failDataName.length > 0) {
     $message.error(`删除失败：${failDataName.join(', ')}`)
   }
@@ -447,6 +449,7 @@ async function handleClickDelete() {
   });
   $message.success('删除成功')
   clearSelectFile()
+  clearCheckedRowKeys()
   getList()
 }
 
