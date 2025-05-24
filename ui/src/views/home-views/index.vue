@@ -92,7 +92,7 @@ function handleQrCode(item) {
     content: () => {
       const link = `${SysStore.value.externalLink}/${item.filePath}`
       return <div class="fx al-ct ju-ct">
-        <n-qr-code id="qr-code" size={150} value={link}></n-qr-code>
+        <n-qr-code id="qr-code" size={200} value={link}></n-qr-code>
       </div>
     }
   })

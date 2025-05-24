@@ -28,6 +28,7 @@ func setupDefaults() {
 	// 接口白名单
 	viper.Set("WhitePath", []string{
 		"/token",
+		"/externalLink",
 	})
 	// 设置日志相关配置的默认值
 	viper.SetDefault("Logs.GinLogName", "/storage/logs/gin.log")

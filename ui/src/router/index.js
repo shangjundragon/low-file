@@ -16,18 +16,24 @@ router.beforeEach(async (to, from) => {
     }
 
     if (SysStore.value.externalLinkOptions.length === 0) {
-        const res = await request({
-            url: '/externalLink',
-            method: 'get',
-        })
-        SysStore.value.externalLinkOptions = res.data.map(m => {
-            return {label: m, value: m}
-        });
-        if (localStorage.getItem('externalLink')) {
-            SysStore.value.externalLink = localStorage.getItem('externalLink');
-        } else {
-            SysStore.value.externalLink = res.data[0];
-            localStorage.setItem('externalLink', SysStore.value.externalLink);
+        console.log('externalLinkOptions', to.name)
+        try {
+            const res = await request({
+                url: '/externalLink',
+                method: 'get',
+            })
+            SysStore.value.externalLinkOptions = res.data.map(m => {
+                return {label: m, value: m}
+            });
+            if (localStorage.getItem('externalLink')) {
+                SysStore.value.externalLink = localStorage.getItem('externalLink');
+            } else {
+                SysStore.value.externalLink = res.data[0];
+                localStorage.setItem('externalLink', SysStore.value.externalLink);
+            }
+        } catch (error) {
+            console.log('获取外链失败')
+            return true
         }
     }
     return true

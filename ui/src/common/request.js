@@ -19,15 +19,15 @@ request.interceptors.response.use(async response => {
         return response.data
     }
     if (code === 401) {
-        window['$message'].error(msg);
+        window['$message']?.error(msg);
         localStorage.removeItem('authorization-token')
         await router.push({name: 'login'});
         return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
     } else if (code === 404) {
-        window['$message'].error(msg);
+        window['$message']?.error(msg);
         return Promise.reject(new Error(msg))
     } else if (code === 500) {
-        window['$message'].error(msg);
+        window['$message']?.error(msg);
         return Promise.reject(new Error(msg))
     } else if (code !== 200) {
         return Promise.reject('error')
@@ -45,7 +45,7 @@ request.interceptors.response.use(async response => {
     } else if (message.includes("Request failed with status code")) {
         message = "接口" + message.substr(message.length - 3) + "异常";
     }
-    window['$message'].error(message)
+    window['$message']?.error(message)
     return Promise.reject(error)
 })
 

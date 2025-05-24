@@ -62,7 +62,6 @@ func authMiddleware() gin.HandlerFunc {
 			errMsg = "令牌处理异常"
 		}
 		global.ResFail(resHandler.WithMsg(errMsg))
-		c.Abort()
 		return
 	}
 }

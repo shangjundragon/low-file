@@ -60,6 +60,7 @@ func ResFail(rh *ResponseHandler) {
 		"code": rh.code,
 		"msg":  rh.msg,
 		"data": rh.data})
+	rh.context.Abort()
 }
 
 func GetLoggerAndResponseHandler(c *gin.Context, field ...zap.Field) (*ResponseHandler, *zap.Logger) {
@@ -71,4 +72,8 @@ func GetLoggerAndResponseHandler(c *gin.Context, field ...zap.Field) (*ResponseH
 	logger := traceLogger.(*zap.Logger).With(field...)
 	resHandler := &ResponseHandler{context: c, logger: logger}
 	return resHandler, logger
+}
+
+func NewResponseHandler(c *gin.Context, data interface{}, msg string) *ResponseHandler {
+	return &ResponseHandler{context: c, data: data, msg: msg}
 }
