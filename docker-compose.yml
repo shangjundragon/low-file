@@ -8,6 +8,8 @@ services:
       - ./uploads:/usr/local/at-sjl/low-file/uploads
       # 日志
       - ./logs:/usr/local/at-sjl/low-file/logs
+      # 数据文件
+      - ./data:/usr/local/at-sjl/low-file/data
       # 自定义应用配置文件
       # - ./application.yml:/usr/local/at-sjl/low-file/application.yml
     ports:
