@@ -1,5 +1,4 @@
 <template>
-  <n-button type="primary" size="small" @click="handleClickDoc" style="margin: 1rem;float: right">文档</n-button>
   <div class="fx-column al-ct ju-ct " style="height: 100vh">
     <div style="width: 400px" class="fx-column al-ct ju-ct fx-gp10">
       <div class="fx ju-ct" style="font-size: 1.5rem;font-weight: bold">
@@ -27,9 +26,7 @@ import {useMessage} from "naive-ui";
 import request from '@/src/common/request.js'
 import router from '@/src/router/index.js'
 const VITE_DOC_URL = import.meta.env.VITE_DOC_URL
-function handleClickDoc() {
-  window.open(VITE_DOC_URL)
-}
+
 const formRef = useTemplateRef('formRef')
 onMounted(() => {
   window['$message'] = useMessage()

@@ -63,7 +63,12 @@ func ResFail(rh *ResponseHandler) {
 }
 
 func GetLoggerAndResponseHandler(c *gin.Context, field ...zap.Field) (*ResponseHandler, *zap.Logger) {
-	logger := GetZapTraceLogger(c).With(field...)
+	traceLogger, exists := c.Get("zap_logger")
+	if !exists {
+		traceLogger = Logger // 回退到全局Logger
+	}
+
+	logger := traceLogger.(*zap.Logger).With(field...)
 	resHandler := &ResponseHandler{context: c, logger: logger}
 	return resHandler, logger
 }

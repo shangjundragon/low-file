@@ -27,7 +27,7 @@ AutoOpenBrowser: false
 Overwrite: false
 
 # jwt密钥
-JwtSecret: bsdhfsdalkfjlkjlkjsdfsdf
+JwtSecret: "bsdhfsdalkfjlkjlkjsdfsdf"
 
 
 Logs:

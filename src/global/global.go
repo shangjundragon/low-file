@@ -1,8 +1,8 @@
 package global
 
 import (
-	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"io/fs"
 )
 
 var OnLineToken = make(map[string]any)
@@ -15,10 +15,8 @@ var RootDir string
 // BasePath 程序允许路径
 var BasePath string
 
-func GetZapTraceLogger(c *gin.Context) *zap.Logger {
-	logger, exists := c.Get("zap_logger")
-	if !exists {
-		logger = Logger // 回退到全局Logger
-	}
-	return logger.(*zap.Logger)
-}
+// StaticFs 前端静态文件系统
+var StaticFs fs.FS
+
+// IndexHtml 前端首页index.html
+var IndexHtml []byte

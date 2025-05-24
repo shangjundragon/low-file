@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"embed"
 	"errors"
 	"github.com/spf13/viper"
 	"log"
@@ -8,22 +9,15 @@ import (
 	"low-file/src/global"
 	"os"
 	"path/filepath"
-	"strings"
 )
+
+//go:embed public/*
+var embeddedFS embed.FS
 
 func init() {
 
-	if curPath, err := os.Getwd(); err == nil {
-		// 路径进行处理，兼容单元测试程序程序启动时的奇怪路径
-		if len(os.Args) > 1 && strings.HasPrefix(os.Args[1], "-test") {
-			global.BasePath = strings.Replace(strings.Replace(curPath, `\test`, "", 1), `/test`, "", 1)
-		} else {
-			global.BasePath = curPath
-		}
-	} else {
-		log.Fatal("初始化程序目录失败")
-	}
-
+	// 初始化BasePath
+	initBasePath()
 	// 设置viper默认配置
 	setupDefaults()
 	// 加载application.yml配置
@@ -32,7 +26,8 @@ func init() {
 	global.Logger = factory.CreateZapFactory(factory.ZapLogHandler)
 	// 验证存储目录
 	validateAndCreateUploadDir()
-
+	// 初始化静态资源
+	initStatic()
 }
 
 func setupDefaults() {
