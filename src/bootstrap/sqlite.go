@@ -25,8 +25,8 @@ var createTableStatements = []string{
 
 func initSqlite() {
 	// 获取数据库文件路径（分离目录和文件名）
-	dataDir := filepath.Join(global.BasePath, "data") // 目录路径
-	dbFile := filepath.Join(dataDir, "low-file.db")   // 文件路径
+	dataDir := filepath.Join(global.BasePath, "storage/data") // 目录路径
+	dbFile := filepath.Join(dataDir, "low-file.db")           // 文件路径
 
 	// 创建数据目录（仅创建目录部分）
 	if err := os.MkdirAll(dataDir, 0755); err != nil {

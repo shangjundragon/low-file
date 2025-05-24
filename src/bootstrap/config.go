@@ -13,7 +13,7 @@ func initConfig() {
 	loadApplicationYml()
 }
 func setupDefaults() {
-	defaultUploadsDir := filepath.Clean(filepath.Join(global.BasePath, "uploads"))
+	defaultUploadsDir := filepath.Clean(filepath.Join(global.BasePath, "storage/uploads"))
 	viper.SetDefault("Public", false)
 	viper.SetDefault("AppDebug", false)
 	viper.SetDefault("Dir", defaultUploadsDir)
@@ -30,8 +30,8 @@ func setupDefaults() {
 		"/token",
 	})
 	// 设置日志相关配置的默认值
-	viper.SetDefault("Logs.GinLogName", "/logs/gin.log")
-	viper.SetDefault("Logs.AppFileLogName", "/logs/low-file.log")
+	viper.SetDefault("Logs.GinLogName", "/storage/logs/gin.log")
+	viper.SetDefault("Logs.AppFileLogName", "/storage/logs/low-file.log")
 	viper.SetDefault("Logs.TextFormat", "json")
 	viper.SetDefault("Logs.TimePrecision", "millisecond")
 	viper.SetDefault("Logs.MaxSize", 10)   // 单位：MB
