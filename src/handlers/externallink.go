@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
@@ -27,6 +28,8 @@ func init() {
 	for _, val := range ips {
 		internalNetworkIps = append(internalNetworkIps, "http://"+val+viper.GetString("Port"))
 	}
+	envExternalLink := os.Getenv("ExternalLink")
+	global.Logger.Info("envExternalLink", zap.String("ExternalLink", envExternalLink))
 }
 
 // isHealthy 检查指定地址是否健康

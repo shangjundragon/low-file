@@ -3,6 +3,8 @@ services:
 
     image: registry.cn-hangzhou.aliyuncs.com/atdocker-sjl/low-file:latest  # 镜像ID
     container_name: low-file  # 容器名称
+    entrypoint:
+      - ExternalLink="testExternalLink"
     volumes:
       - ./storage:/usr/local/at-sjl/low-file/storage
       # 自定义应用配置文件
