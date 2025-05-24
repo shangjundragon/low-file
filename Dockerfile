@@ -9,12 +9,10 @@ USER root
 COPY target/low-file.linux ${BASE_DIR}/
 
 
-RUN apt-get update && apt-get install -y tzdata && mkdir -p ${BASE_DIR}/uploads && chmod +x ${BASE_DIR}/low-file.linux
+RUN apt-get update && apt-get install -y tzdata && apt-get clean && mkdir -p ${BASE_DIR}/storage && chmod +x ${BASE_DIR}/low-file.linux
 
-
-# 暴露端口
-EXPOSE 23547
+WORKDIR ${BASE_DIR}
 
 # 启动命令
-CMD ["bash", "-c", "cd ${BASE_DIR} && ./low-file.linux"]
+CMD ["./low-file.linux"]
 
