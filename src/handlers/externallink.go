@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"github.com/duke-git/lancet/v2/strutil"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -13,23 +15,32 @@ import (
 	"low-file/src/global"
 )
 
-var internalNetworkIps = make([]string, 0)
-var mergeLinks []string
+var internalNetworkIPs = make([]string, 0)
+var envLinks = make([]string, 0)
+var mergeLinks = make([]string, 0)
 var mergeLinksMutex sync.RWMutex
 var lastUpdate time.Time
 
 const cacheTTL = 5 * time.Minute // 缓存过期时间
 
 func init() {
+	// 获取内网ip
 	ips, err := utils.GetAllIntranetIPs()
 	if err != nil {
 		global.Logger.Error("读取内网IP失败", zap.Error(err))
 	}
 	for _, val := range ips {
-		internalNetworkIps = append(internalNetworkIps, "http://"+val+viper.GetString("Port"))
+		internalNetworkIPs = append(internalNetworkIPs, "http://"+val+viper.GetString("Port"))
 	}
-	envExternalLink := os.Getenv("ExternalLink")
-	global.Logger.Info("envExternalLink", zap.String("ExternalLink", envExternalLink))
+	global.Logger.Info("读取本机所有ip", zap.Any("internalNetworkIPs", internalNetworkIPs))
+
+	// 获取环境变量
+	envConfigExternalLink := os.Getenv("ExternalLink")
+	if strutil.IsNotBlank(envConfigExternalLink) {
+		envLinks = strings.Split(envConfigExternalLink, ",")
+		global.Logger.Info("获取环境变量外链", zap.Any("envLinks", envLinks))
+	}
+
 }
 
 // isHealthy 检查指定地址是否健康
@@ -69,10 +80,10 @@ func ExternalLink(c *gin.Context) {
 	client := &http.Client{Timeout: 5 * time.Second}
 	var healthyLinks []string
 	var wg sync.WaitGroup
-	resultChan := make(chan string, len(internalNetworkIps))
+	resultChan := make(chan string, len(internalNetworkIPs))
 
-	for _, addr := range internalNetworkIps {
-		logger.Info("开始检查节点", zap.String("addr", addr))
+	for _, addr := range internalNetworkIPs {
+		logger.Info("开始检查内网ip节点", zap.String("addr", addr))
 		wg.Add(1)
 		go func(addr string) {
 			defer wg.Done()
@@ -92,6 +103,8 @@ func ExternalLink(c *gin.Context) {
 	for addr := range resultChan {
 		healthyLinks = append(healthyLinks, addr)
 	}
+	// 合并环境变量配置
+	healthyLinks = append(healthyLinks, envLinks...)
 
 	// 合并链接并设置缓存
 	mergeLinksMutex.Lock()
