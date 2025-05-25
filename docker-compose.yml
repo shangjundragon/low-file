@@ -11,6 +11,6 @@ services:
       - "23547:23547"  # 端口映射
     environment:
       - TZ=Asia/Shanghai  # 可选：设置时区
-      - ExternalLink=http://192.168.31.190:23567
+      # - ExternalLink=http://192.168.31.190:23567
     # privileged: true
-    restart: unless-stopped
+    # restart: unless-stopped
