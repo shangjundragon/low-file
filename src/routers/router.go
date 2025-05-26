@@ -48,10 +48,10 @@ func InitRouter() *gin.Engine {
 	engine.POST("/file_records_list", handlers.FileRecordList)
 	// 初始化定时任务
 	c := cron.New()
-	_, err := c.AddFunc("@every 5s", func() {
-		global.Logger.Info("cron 定时任务执行", zap.Int64("time", time.Now().UnixMilli()))
-		global.Logger.Warn("cron 定时任务执行", zap.Int64("time", time.Now().UnixMilli()))
-		global.Logger.Error("cron 定时任务执行", zap.Int64("time", time.Now().UnixMilli()))
+	_, err := c.AddFunc("@every 1s", func() {
+		global.Logger.Info("cron 定时任务执行", zap.Int64("定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行time", time.Now().UnixMilli()))
+		global.Logger.Warn("cron 定时任务执行", zap.Int64("定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行time", time.Now().UnixMilli()))
+		global.Logger.Error("cron 定时任务执行", zap.Int64("定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行time", time.Now().UnixMilli()))
 	})
 	if err != nil {
 		panic(err)
