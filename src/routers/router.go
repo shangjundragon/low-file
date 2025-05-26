@@ -50,6 +50,8 @@ func InitRouter() *gin.Engine {
 	c := cron.New()
 	_, err := c.AddFunc("@every 5s", func() {
 		global.Logger.Info("cron 定时任务执行", zap.Int64("time", time.Now().UnixMilli()))
+		global.Logger.Warn("cron 定时任务执行", zap.Int64("time", time.Now().UnixMilli()))
+		global.Logger.Error("cron 定时任务执行", zap.Int64("time", time.Now().UnixMilli()))
 	})
 	if err != nil {
 		panic(err)
