@@ -2,14 +2,11 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
 	"low-file/src/common/middlerware"
 	"low-file/src/global"
 	"low-file/src/handlers"
 	"net/http"
-	"time"
 )
 
 func InitRouter() *gin.Engine {
@@ -46,16 +43,5 @@ func InitRouter() *gin.Engine {
 	engine.POST("/del", handlers.Del)
 	// 文件记录列表
 	engine.POST("/file_records_list", handlers.FileRecordList)
-	// 初始化定时任务
-	c := cron.New()
-	_, err := c.AddFunc("@every 1s", func() {
-		global.Logger.Info("cron 定时任务执行", zap.Int64("定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行time", time.Now().UnixMilli()))
-		global.Logger.Warn("cron 定时任务执行", zap.Int64("定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行time", time.Now().UnixMilli()))
-		global.Logger.Error("cron 定时任务执行", zap.Int64("定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行定时任务执行time", time.Now().UnixMilli()))
-	})
-	if err != nil {
-		panic(err)
-	}
-	c.Start()
 	return engine
 }
