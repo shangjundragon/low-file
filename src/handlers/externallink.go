@@ -26,6 +26,8 @@ const cacheTTL = 5 * time.Minute // 缓存过期时间
 func init() {
 	// 获取内网ip
 	ips, err := utils.GetAllIntranetIPs()
+	// 添加一个本机地址
+	ips = append(ips, "localhost")
 	if err != nil {
 		global.Logger.Error("读取内网IP失败", zap.Error(err))
 	}
