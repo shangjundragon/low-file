@@ -32,7 +32,15 @@
           </template>
         </n-button>
         <n-button type="primary" size="small" @click="handleClickUpload">
-          上传
+          上传文件
+          <template #icon>
+            <n-icon size="20">
+              <CloudUpload/>
+            </n-icon>
+          </template>
+        </n-button>
+        <n-button type="primary" size="small" @click="handleClickUpload({directory: true})">
+          上传文件夹
           <template #icon>
             <n-icon size="20">
               <CloudUpload/>
@@ -359,10 +367,19 @@ function handleClickCreateFolder() {
   }
 }
 
-// 点击上传文件
-function handleClickUpload() {
+/**
+ * 点击上传文件/夹
+ * @param options
+ * @param {Boolean} [options.directory] 默认 false 是否上传文件夹
+ */
+function handleClickUpload(options = {}) {
+  const {directory = false} = options
   clearSelectFile()
   const instance = funcUploadFile({
+    otherNUploadProps: {
+      'directory-dnd': true,
+      directory
+    },
     modal,
     loadingBar,
     multiple: true,
