@@ -28,4 +28,5 @@ func initRootUploadsDir() {
 	}
 
 	global.RootUploadsDir = uploadDir
+	log.Printf("文件管理目录：%s", global.RootUploadsDir)
 }

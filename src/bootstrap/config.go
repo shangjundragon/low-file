@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"errors"
+	"flag"
 	"github.com/spf13/viper"
 	"log"
 	"low-file/src/global"
@@ -9,8 +10,12 @@ import (
 )
 
 func initConfig() {
+	// 设置缺省默认值
 	setupDefaults()
+	// 读取application.yml
 	loadApplicationYml()
+	// 读取命令行
+	loadCommandLine()
 }
 func setupDefaults() {
 	defaultUploadsDir := filepath.Clean(filepath.Join(global.BasePath, "storage/uploads"))
@@ -54,4 +59,25 @@ func loadApplicationYml() {
 		}
 		log.Fatalf("配置文件读取失败: %v", err)
 	}
+}
+
+func loadCommandLine() {
+	var (
+		port string
+		dir  string
+	)
+
+	// -port=port -dir=dir
+	// 修正参数名和帮助信息
+	flag.StringVar(&port, "port", viper.GetString("Port"), "服务监听端口")
+	flag.StringVar(&dir, "dir", viper.GetString("Dir"), "管理上传目录")
+
+	flag.Parse()
+
+	viper.Set("Port", port)
+	if filepath.IsAbs(dir) {
+		viper.Set("Dir", dir)
+		return
+	}
+	viper.Set("Dir", filepath.Clean(filepath.Join(global.BasePath, dir)))
 }

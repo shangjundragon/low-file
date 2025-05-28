@@ -377,7 +377,7 @@ function handleClickUpload(options = {}) {
   clearSelectFile()
   const instance = funcUploadFile({
     otherNUploadProps: {
-      'directory-dnd': true,
+      // 'directory-dnd': true,
       directory
     },
     modal,

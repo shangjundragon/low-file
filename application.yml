@@ -4,6 +4,9 @@ Public: false
 # 文件目录必须为绝对路径 不配置为程序启动目录下的uploads
 Dir:
 
+# 项目运行端口
+Port: ":23547"
+
 # debug 模式
 AppDebug: true
 
@@ -16,8 +19,7 @@ Password:
 # 文件访问外链数组
 ExternalLink:
 
-# 项目运行端口
-Port: ":23547"
+
 
 # windows启动后自动打开浏览器
 AutoOpenBrowser: false

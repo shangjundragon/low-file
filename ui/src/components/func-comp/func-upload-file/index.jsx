@@ -63,7 +63,7 @@ export default (options) => {
                     file,
                     fullPath: '',
                     id: uuid,
-                    name: `${uuid}_${file.name}`,
+                    name: fileList.value?.find(f => f.name === file.name) ? `${uuid}_${file.name}` : file.name,
                     percentage: 0,
                     status: 'pending',
                     thumbnailUri: null,
@@ -77,7 +77,6 @@ export default (options) => {
             fileList.value = [...fileList.value, ...newFiles]
         }
     }
-
 
 
     /* 上传逻辑 */
