@@ -53,6 +53,7 @@
     <div ref="tableScrollbar" style="flex: 1;" class="fx fx-gp05">
       <n-data-table @update:checked-row-keys="handleCheckRow" :row-key="rowKey" class="fx-1"
                     :max-height="tableMaxHeight" :columns="columns" :data="dataList"/>
+      <!--      选中多个文件-->
       <div v-if="checkedRowKeys.length > 0" class="fx-column fx-gp10 al-ct"
            style="width: 250px;height: 100%;border: 1px solid #ccc;border-radius: 4px;padding: 0.5rem 1rem">
 
@@ -97,6 +98,7 @@
         </n-button>
 
       </div>
+      <!--      点击单个文件-->
       <div v-if="checkedRowKeys.length === 0 && selectFile" class="fx-column fx-gp10 al-ct"
            style="width: 250px;height: 100%;border: 1px solid #ccc;border-radius: 4px;padding: 0.5rem 1rem">
 
@@ -131,6 +133,14 @@
             </n-icon>
           </template>
         </n-button>
+        <n-button @click="handleCopyPath" block size="small" type="primary">
+          复制路径
+          <template #icon>
+            <n-icon size="20">
+              <Copy/>
+            </n-icon>
+          </template>
+        </n-button>
 
         <n-button @click="handleClickDelete" block size="small" type="error" ghost>删除
           <template #icon>
@@ -156,7 +166,7 @@ import folderSvg from '@/src/assets/svg/folder.svg'
 import pdfSvg from '@/src/assets/svg/pdf.svg'
 import textSvg from '@/src/assets/svg/text.svg'
 import imgSvg from '@/src/assets/svg/img.svg'
-import {AddSharp, Close, CloudDownload, CloudUpload, Eye, Refresh, ShareSocial, TrashBin} from '@vicons/ionicons5'
+import {AddSharp, Close, CloudDownload, CloudUpload, Eye, Refresh, ShareSocial, TrashBin,Copy} from '@vicons/ionicons5'
 import {useLoadingBar, useModal} from 'naive-ui'
 import funcUploadFile from "@/src/components/func-comp/func-upload-file/index.jsx";
 import funcModalConfirm from "@/src/components/func-comp/func-modal-confirm/index.jsx";
@@ -165,12 +175,16 @@ import {copyText} from "@/src/common/utils.js";
 const modal = useModal();
 const loadingBar = useLoadingBar();
 import SysStore from "@/src/store/sys-store.js";
+
 const tableScrollbarRef = useTemplateRef('tableScrollbar');
 const tableMaxHeight = ref(100);
 const checkedRowKeys = ref([]);
+
 function clearCheckedRowKeys() {
+  console.log('清除选中行')
   checkedRowKeys.value = [];
 }
+
 function rowKey(row) {
   return row.filePath
 }
@@ -435,7 +449,9 @@ async function handleClickCheckRowDelete() {
   }
   getList()
 }
-
+function handleCopyPath() {
+  copyText(selectFile.value.filePath)
+}
 async function handleClickDelete() {
   await funcModalConfirm({modal})
   await request.loadingRequest({
@@ -506,7 +522,6 @@ async function handleClickCheckRowShare() {
   copyText(link)
 
 }
-
 
 
 function handleClickCheckRowPreview() {
