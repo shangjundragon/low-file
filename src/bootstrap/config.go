@@ -19,6 +19,7 @@ func initConfig() {
 }
 func setupDefaults() {
 	defaultUploadsDir := filepath.Clean(filepath.Join(global.BasePath, "storage/uploads"))
+	viper.SetDefault("ContextPath", "")
 	viper.SetDefault("Public", false)
 	viper.SetDefault("AppDebug", false)
 	viper.SetDefault("Dir", defaultUploadsDir)
