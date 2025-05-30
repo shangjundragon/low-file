@@ -43,3 +43,14 @@ function fallbackCopyTextToClipboard(text) {
         document.body.removeChild(textArea);
     }
 }
+
+
+export function endWithImgType(str) {
+    try {
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg'];
+        return imageExtensions.some(ext => str.endsWith(ext));
+    } catch (e) {
+        // 如果 URL 无效，返回 false
+        return false;
+    }
+}

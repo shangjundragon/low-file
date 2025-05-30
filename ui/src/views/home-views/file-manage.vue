@@ -151,9 +151,8 @@
         </n-button>
 
         <n-popselect @update-value="handleDownloadQRCode" :options="[{label: '下载', value: 'download'}]">
-          <n-qr-code id="qr-code" :size="150" :value="selectFileLink"/>
+          <n-qr-code id="qr-code" :size="150" :value="selectFileLink" />
         </n-popselect>
-
 
       </div>
     </div>
@@ -166,12 +165,12 @@ import folderSvg from '@/src/assets/svg/folder.svg'
 import pdfSvg from '@/src/assets/svg/pdf.svg'
 import textSvg from '@/src/assets/svg/text.svg'
 import imgSvg from '@/src/assets/svg/img.svg'
-import {AddSharp, Close, CloudDownload, CloudUpload, Eye, Refresh, ShareSocial, TrashBin,Copy} from '@vicons/ionicons5'
+import {AddSharp, Close, CloudDownload, CloudUpload, Eye, Refresh, ShareSocial, TrashBin, Copy} from '@vicons/ionicons5'
 import {useLoadingBar, useModal} from 'naive-ui'
 import funcUploadFile from "@/src/components/func-comp/func-upload-file/index.jsx";
 import funcModalConfirm from "@/src/components/func-comp/func-modal-confirm/index.jsx";
-import {copyText} from "@/src/common/utils.js";
-
+import {copyText, endWithImgType} from "@/src/common/utils.js";
+import LazyComp from '@/src/components/LazyComp/index.vue'
 const modal = useModal();
 const loadingBar = useLoadingBar();
 import SysStore from "@/src/store/sys-store.js";
@@ -288,6 +287,18 @@ const columns = [
     }
   },
   {
+    title: '预览', align: 'center',  width: 250, render(row) {
+      if (!endWithImgType(row.filePath)) {
+        return <span>非图片文件</span>
+      }
+      const src = getFileLink(row)
+      return <LazyComp>
+        <n-image  style="width: 50px;height: 50px" object-fit="contain" src={src}/>
+      </LazyComp>
+
+    }
+  },
+  {
     title: '文件大小', align: 'center', key: 'size', width: 250, ellipsis: true, render: (row) => {
       let bytes = row.size;
       let result = '';
@@ -309,8 +320,30 @@ const columns = [
       return <span>{result}</span>;
     }
   },
-  {title: '最近更新', align: 'center', key: 'mtime', ellipsis: true, width: 250},
+  {
+    title: '最近更新', align: 'center', key: 'mtime', ellipsis: true, width: 250, render(row) {
+      return <span>{row.mtime.replace('T', ' ').substring(0, 19)}</span>
+    }
+  },
+  {
+    title: '操作', align: 'center', width: 100, render(row) {
+      return <n-dropdown onSelect={(action) => onSelectAction(action, row)} trigger="hover" options={actionOptions.value} >
+          <n-button type="primary" size="small" block> 操作 </n-button>
+    </n-dropdown>
+    }
+  },
 ]
+function onSelectAction(action, row) {
+  if (action === 'copyPath') {
+    copyText(row.filePath)
+  }
+}
+const actionOptions = ref([
+  {
+    label: '复制路径',
+    key: 'copyPath',
+  }
+])
 
 const breadcrumbs = ref([])
 
@@ -449,9 +482,11 @@ async function handleClickCheckRowDelete() {
   }
   getList()
 }
+
 function handleCopyPath() {
   copyText(selectFile.value.filePath)
 }
+
 async function handleClickDelete() {
   await funcModalConfirm({modal})
   await request.loadingRequest({

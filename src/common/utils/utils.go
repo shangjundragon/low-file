@@ -6,16 +6,17 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
+	"time"
 )
 
-// FileInfo 用于存储文件/文件夹的信息
 type FileInfo struct {
-	Type     string `json:"type"`
-	Name     string `json:"name"`
-	FilePath string `json:"filePath"`
-	Size     int64  `json:"size"`
-	MTime    string `json:"mtime"`
+	Type     string    `json:"type"`
+	Name     string    `json:"name"`
+	FilePath string    `json:"filePath"`
+	Size     int64     `json:"size"`
+	MTime    time.Time `json:"mtime"`
 }
 
 func GetFolderFiles(folder string) ([]FileInfo, error) {
@@ -37,8 +38,9 @@ func GetFolderFiles(folder string) ([]FileInfo, error) {
 			return nil, err
 		}
 
-		// 格式化修改时间
-		mtime := info.ModTime().Format("2006-01-02 15:04:05")
+		// 获取修改时间
+		mtime := info.ModTime()
+
 		rel, err := filepath.Rel(global.RootUploadsDir, path)
 		if err != nil {
 			return nil, err
@@ -46,7 +48,6 @@ func GetFolderFiles(folder string) ([]FileInfo, error) {
 		rel = strings.Replace(rel, "\\", "/", -1)
 		// 判断是文件还是文件夹
 		if info.IsDir() {
-
 			result = append(result, FileInfo{
 				Type:     "folder",
 				Name:     name,
@@ -64,6 +65,17 @@ func GetFolderFiles(folder string) ([]FileInfo, error) {
 			})
 		}
 	}
+
+	// 按类型和修改时间倒序排序
+	sort.Slice(result, func(i, j int) bool {
+		if result[i].Type == "folder" && result[j].Type == "file" {
+			return true
+		}
+		if result[i].Type == "file" && result[j].Type == "folder" {
+			return false
+		}
+		return result[i].MTime.After(result[j].MTime)
+	})
 
 	return result, nil
 }
