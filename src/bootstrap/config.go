@@ -33,6 +33,7 @@ func setupDefaults() {
 
 	// 接口白名单
 	viper.Set("WhitePath", []string{
+		"/ping",
 		"/token",
 		"/externalLink",
 	})

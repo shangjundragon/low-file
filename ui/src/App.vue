@@ -3,6 +3,9 @@
   <n-config-provider
       :locale="zhCN"
       :date-locale="dateZhCN"
+      :theme-overrides="themeOverrides"
+      :abstract="true"
+      :inline-theme-disabled="true"
   >
     <n-modal-provider>
       <n-loading-bar-provider>
@@ -18,7 +21,14 @@
 
 <script setup>
 import {zhCN, dateZhCN} from 'naive-ui'
-
+onBeforeMount(() => {
+  document.querySelector('#Loading')?.remove()
+})
+const themeOverrides = ref({
+  LoadingBar: {
+    height: '5px',
+  },
+})
 </script>
 
 <style scoped>
