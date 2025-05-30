@@ -19,7 +19,7 @@ func initConfig() {
 }
 func setupDefaults() {
 	defaultUploadsDir := filepath.Clean(filepath.Join(global.BasePath, "storage/uploads"))
-	viper.SetDefault("ContextPath", "")
+	viper.SetDefault("ContextPath", "/")
 	viper.SetDefault("Public", false)
 	viper.SetDefault("AppDebug", false)
 	viper.SetDefault("Dir", defaultUploadsDir)
@@ -64,21 +64,25 @@ func loadApplicationYml() {
 
 func loadCommandLine() {
 	var (
-		port string
-		dir  string
+		port        string
+		dir         string
+		contextpath string
 	)
 
 	// -port=port -dir=dir
 	// 修正参数名和帮助信息
 	flag.StringVar(&port, "port", viper.GetString("Port"), "服务监听端口")
 	flag.StringVar(&dir, "dir", viper.GetString("Dir"), "管理上传目录")
+	flag.StringVar(&contextpath, "contextpath", viper.GetString("ContextPath"), "系统反向代理运行路径")
 
 	flag.Parse()
 
 	viper.Set("Port", port)
 	if filepath.IsAbs(dir) {
 		viper.Set("Dir", dir)
-		return
+	} else {
+		viper.Set("Dir", filepath.Clean(filepath.Join(global.BasePath, dir)))
 	}
-	viper.Set("Dir", filepath.Clean(filepath.Join(global.BasePath, dir)))
+
+	viper.Set("ContextPath", contextpath)
 }

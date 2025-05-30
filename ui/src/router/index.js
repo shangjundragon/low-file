@@ -9,19 +9,21 @@ const router = createRouter({
     routes,
 })
 
+let reqTmp = false;
+
 router.beforeEach(async (to, from) => {
     if (!localStorage.getItem('authorization-token') && to.name !== 'login') {
         // 没登录跳转登录页
         return {name: 'login'};
     }
 
-    if (SysStore.value.externalLinkOptions.length === 0) {
-        console.log('externalLinkOptions', to.name)
+    if (reqTmp === false && SysStore.value.externalLinkOptions.length === 0) {
         try {
+            reqTmp = true;
             const res = await request({
                 url: '/externalLink',
                 method: 'get',
-            })
+            });
             SysStore.value.externalLinkOptions = res.data.map(m => {
                 return {label: m, value: m}
             });

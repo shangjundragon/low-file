@@ -7,6 +7,9 @@ Dir:
 # 项目运行端口
 Port: ":23547"
 
+# 系统反向代理运行路径 配置了反向大理则不能直接访问
+ContextPath:
+
 # debug 模式
 AppDebug: true
 
@@ -20,9 +23,8 @@ Password:
 ExternalLink:
 
 
-
 # windows启动后自动打开浏览器
-AutoOpenBrowser: false
+AutoOpenBrowser: true
 
 # 同名文件覆盖上传
 Overwrite: false

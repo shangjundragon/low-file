@@ -1,7 +1,6 @@
 package bootstrap
 
 import (
-	"fmt"
 	"github.com/duke-git/lancet/v2/strutil"
 	"github.com/spf13/viper"
 	"io"
@@ -29,8 +28,9 @@ func initStatic() {
 
 	global.StaticFs = subFS
 	htmlStr := string(content)
-	if strutil.IsNotBlank(viper.GetString("ContextPath")) {
-		htmlStr = strings.ReplaceAll(htmlStr, `window['BASE_API'] = undefined`, "window['BASE_API'] = "+fmt.Sprintf("'%s'", viper.GetString("ContextPath")))
+	viperContextPath := viper.GetString("ContextPath")
+	if strutil.IsNotBlank(viperContextPath) {
+		htmlStr = strings.ReplaceAll(htmlStr, `/ContextPath/`, viperContextPath)
 	}
 	global.Logger.Info(htmlStr)
 	global.IndexHtml = []byte(htmlStr)

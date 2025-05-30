@@ -58,12 +58,17 @@ export default (options) => {
                 const file = item.getAsFile();
                 // 创建标准化文件对象
                 const uuid = uuidv4().substring(0, 8)
+                let name = fileList.value?.find(f => f.name === file.name) ? `${uuid}_${file.name}` : file.name;
+                if (name === 'image.png') {
+                    // 针对Snipaste截图软件的特殊处理
+                    name = `${uuid}_${name}`
+                }
                 return {
                     batchId: uuid,
                     file,
                     fullPath: '',
                     id: uuid,
-                    name: fileList.value?.find(f => f.name === file.name) ? `${uuid}_${file.name}` : file.name,
+                    name,
                     percentage: 0,
                     status: 'pending',
                     thumbnailUri: null,
