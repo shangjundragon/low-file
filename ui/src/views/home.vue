@@ -24,6 +24,7 @@ import SysStore from "@/src/store/sys-store.js";
 
 const tab = ref(undefined)
 onMounted(() => {
+  document.querySelector('#Loading')?.remove()
   window['$message'] = useMessage()
   tab.value = router.currentRoute.value.name
 })

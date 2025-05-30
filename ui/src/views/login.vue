@@ -29,6 +29,7 @@ const VITE_DOC_URL = import.meta.env.VITE_DOC_URL
 
 const formRef = useTemplateRef('formRef')
 onMounted(() => {
+  document.querySelector('#Loading')?.remove()
   window['$message'] = useMessage()
 })
 console.log('import.meta.env', import.meta.env.MODE)

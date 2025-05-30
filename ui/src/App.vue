@@ -21,9 +21,7 @@
 
 <script setup>
 import {zhCN, dateZhCN} from 'naive-ui'
-onBeforeMount(() => {
-  document.querySelector('#Loading')?.remove()
-})
+
 const themeOverrides = ref({
   LoadingBar: {
     height: '5px',
