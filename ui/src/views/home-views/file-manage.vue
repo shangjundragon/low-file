@@ -203,7 +203,8 @@ watch(() => currentFolder.value, val => {
 })
 
 async function getList() {
-  const {data} = await request({
+  const {data} = await request.loadingRequest({
+    loadingBar,
     method: 'post',
     url: '/folderFiles',
     data: {
@@ -401,7 +402,8 @@ function handleClickCreateFolder() {
       $message.error('文件夹名称必填');
       return
     }
-    await request({
+    await request.loadingRequest({
+      loadingBar,
       url: '/createDir',
       method: 'post',
       data: {
@@ -464,7 +466,8 @@ async function handleClickCheckRowDelete() {
   const failDataName = []
   for (const data of checkedData) {
     try {
-      await request({
+      await request.loadingRequest({
+        loadingBar,
         url: '/del',
         method: 'post',
         data: {
