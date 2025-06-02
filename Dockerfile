@@ -9,7 +9,7 @@ USER root
 COPY target/low-file.linux ${BASE_DIR}/
 
 
-RUN apt-get update && apt-get install -y tzdata && apt-get clean && mkdir -p ${BASE_DIR}/storage && chmod +x ${BASE_DIR}/low-file.linux
+RUN apt-get update && apt-get install -y tzdata && apt-get clean && rm -rf /var/lib/apt/lists/* && mkdir -p ${BASE_DIR}/storage && chmod +x ${BASE_DIR}/low-file.linux
 
 WORKDIR ${BASE_DIR}
 
