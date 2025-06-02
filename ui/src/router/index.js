@@ -18,12 +18,11 @@ router.beforeEach(async (to, from) => {
     }
 
     if (reqTmp === false && SysStore.value.externalLinkOptions.length === 0) {
-        try {
-            reqTmp = true;
-            const res = await request({
-                url: '/externalLink',
-                method: 'get',
-            });
+        reqTmp = true;
+        request({
+            url: '/externalLink',
+            method: 'get',
+        }).then(res => {
             SysStore.value.externalLinkOptions = res.data.map(m => {
                 return {label: m, value: m}
             });
@@ -33,10 +32,7 @@ router.beforeEach(async (to, from) => {
                 SysStore.value.externalLink = res.data[0];
                 localStorage.setItem('externalLink', SysStore.value.externalLink);
             }
-        } catch (error) {
-            console.log('获取外链失败')
-            return true
-        }
+        });
     }
     return true
 })

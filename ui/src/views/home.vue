@@ -11,8 +11,11 @@
         </n-tab>
       </n-tabs>
     </div>
-    <n-select style="width: 250px" size="small" v-model:value="SysStore.externalLink"
-              :options="SysStore.externalLinkOptions"/>
+    <div class="fx al-ct fx-gp05">
+      <n-select style="width: 250px" size="small" v-model:value="SysStore.externalLink"
+                :options="SysStore.externalLinkOptions"/>
+      <n-button @click="handleClickLogout" type="primary" size="small">Logout</n-button>
+    </div>
   </div>
   <router-view/>
 </template>
@@ -37,7 +40,10 @@ const routerTable = {
     name: 'FileManage'
   }
 }
-
+function handleClickLogout() {
+  localStorage.removeItem('authorization-token')
+  router.push({name: 'login'});
+}
 watch(() => SysStore.value.externalLink, val => {
   localStorage.setItem('externalLink', val);
 })
