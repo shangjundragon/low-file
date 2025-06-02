@@ -1,19 +1,10 @@
 @echo off
 
-REM 进入 ui 目录
+REM
 cd /d "%~dp0\ui"
-
-REM 检查是否成功进入 ui 目录
-if not exist "package.json" (
-    echo package.json not found in ui directory.
-    exit /b 1
-)
-
-REM 执行 pnpm run build
 echo 构建前端中。。。
 call pnpm run build
 echo 前端构建完毕!!!
-REM 返回上级目录
 cd ..
 
 setlocal
