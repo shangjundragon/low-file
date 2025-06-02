@@ -3,7 +3,7 @@ import router from "@/src/router/index.js";
 
 const request = axios.create({
     baseURL: import.meta.env.MODE === 'development' ? import.meta.env.VITE_BASE_API : window['BASE_API'],
-    timeout: 10000,
+    timeout: 30000,
 })
 
 request.interceptors.request.use(config => {
