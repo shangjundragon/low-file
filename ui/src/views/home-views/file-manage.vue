@@ -151,7 +151,7 @@
         </n-button>
 
         <n-popselect @update-value="handleDownloadQRCode" :options="[{label: '下载', value: 'download'}]">
-          <n-qr-code id="qr-code" :size="150" :value="selectFileLink" />
+          <n-qr-code id="qr-code" :size="150" :value="selectFileLink"/>
         </n-popselect>
 
       </div>
@@ -163,6 +163,7 @@ import request from '@/src/common/request.js'
 import {computed, onMounted, ref, useTemplateRef, watch, withModifiers} from "vue";
 import folderSvg from '@/src/assets/svg/folder.svg'
 import pdfSvg from '@/src/assets/svg/pdf.svg'
+import excelSvg from '@/src/assets/svg/excel.svg'
 import textSvg from '@/src/assets/svg/text.svg'
 import imgSvg from '@/src/assets/svg/img.svg'
 import {AddSharp, Close, CloudDownload, CloudUpload, Eye, Refresh, ShareSocial, TrashBin, Copy} from '@vicons/ionicons5'
@@ -171,6 +172,7 @@ import funcUploadFile from "@/src/components/func-comp/func-upload-file/index.js
 import funcModalConfirm from "@/src/components/func-comp/func-modal-confirm/index.jsx";
 import {copyText, endWithImgType} from "@/src/common/utils.js";
 import LazyComp from '@/src/components/LazyComp/index.vue'
+
 const modal = useModal();
 const loadingBar = useLoadingBar();
 import SysStore from "@/src/store/sys-store.js";
@@ -239,6 +241,8 @@ const svgMap = new Map([
   ['jpg', <img src={imgSvg} width="15px" height="15px"></img>],
   ['jpeg', <img src={imgSvg} width="15px" height="15px"></img>],
   ['png', <img src={imgSvg} width="15px" height="15px"></img>],
+  ['xls', <img src={excelSvg} width="15px" height="15px"></img>],
+  ['xlsx', <img src={excelSvg} width="15px" height="15px"></img>],
 ])
 
 function readerFileIcon(row) {
@@ -288,19 +292,19 @@ const columns = [
     }
   },
   {
-    title: '预览', align: 'center',  width: 250, render(row) {
+    title: '预览', align: 'center', width: 250, render(row) {
       if (!endWithImgType(row.filePath)) {
         return <span>非图片文件</span>
       }
       const src = getFileLink(row)
       return <LazyComp>
-        <n-image  style="width: 50px;height: 50px" object-fit="contain" src={src}/>
+        <n-image style="width: 50px;height: 50px" object-fit="contain" src={src}/>
       </LazyComp>
 
     }
   },
   {
-    title: '文件大小', align: 'center', key: 'size', width: 250, ellipsis: true, render: (row) => {
+    title: '文件大小', align: 'center', key: 'size', width: 110, ellipsis: true, render: (row) => {
       let bytes = row.size;
       let result = '';
 
@@ -328,17 +332,20 @@ const columns = [
   },
   {
     title: '操作', align: 'center', width: 100, render(row) {
-      return <n-dropdown onSelect={(action) => onSelectAction(action, row)} trigger="hover" options={actionOptions.value} >
-          <n-button type="primary" size="small" block> 操作 </n-button>
-    </n-dropdown>
+      return <n-dropdown onSelect={(action) => onSelectAction(action, row)} trigger="hover"
+                         options={actionOptions.value}>
+        <n-button type="primary" size="small" block> 操作</n-button>
+      </n-dropdown>
     }
   },
 ]
+
 function onSelectAction(action, row) {
   if (action === 'copyPath') {
     copyText(row.filePath)
   }
 }
+
 const actionOptions = ref([
   {
     label: '复制路径',
@@ -545,8 +552,25 @@ function handleClickDownload() {
   window.open(link, '_blank');
 }
 
+const supportedExtensions = [
+  // Word 文档
+  'doc', 'docx', 'dot', 'dotx', 'rtf', 'txt',
+  // Excel 表格
+  'xls', 'xlsx', 'xlsm', 'xlsb', 'csv',
+  // PowerPoint 幻灯片
+  'ppt', 'pptx', 'pot', 'potx',
+  // OneNote 笔记
+  'one', 'onetoc2',
+  // 其他格式
+  'pdf', 'odt', 'ods', 'odp', 'pages', 'numbers', 'key'
+];
+
 function handleClickPreview() {
-  const link = `${selectFileLink.value}`
+  let link = `${selectFileLink.value}`
+  /*if (supportedExtensions.some(s => selectFile.value.name.endsWith(s))) {
+    link = `https://view.officeapps.live.com/op/embed.aspx?src=${link}`;
+  }*/
+  console.log('link', link)
   window.open(link, '_blank');
 }
 
@@ -568,7 +592,10 @@ function handleClickCheckRowPreview() {
     $message.error('文件夹不支持预览');
     return
   }
-  const link = getFileLink(data);
+  let link = getFileLink(data);
+  /*if (supportedExtensions.some(s => data.name.endsWith(s))) {
+    link = `https://view.officeapps.live.com/op/embed.aspx?src=${link}`;
+  }*/
   window.open(link, '_blank');
 }
 
