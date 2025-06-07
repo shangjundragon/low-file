@@ -70,7 +70,36 @@ func afterRun(port string) {
 	// 启动系统托盘（仅Windows）
 	if runtime.GOOS == "windows" {
 		wg.Add(1) // 增加等待组计数
-		go initSystemTray()
+		go func() {
+			defer wg.Done() // 系统托盘退出时减少计数
+
+			systray.Run(
+				func() {
+					systray.SetIcon(icon.Data)
+					systray.SetTitle("low-file")
+					systray.SetTooltip("low-file - PID: " + strconv.Itoa(currentPID))
+
+					mQuit := systray.AddMenuItem("退出", "退出程序")
+					mQuit.SetIcon(icon.Data)
+					go func() {
+						<-mQuit.ClickedCh
+						global.Logger.Info("Received quit signal from system tray")
+						// 发送退出信号
+						close(shutdownChan)
+					}()
+
+					mOpen := systray.AddMenuItem("打开", "打开")
+					mOpen.SetIcon(icon.Data)
+					go func() {
+						<-mOpen.ClickedCh
+						openBrowser(serverURL)
+					}()
+				},
+				func() {
+					global.Logger.Info("System tray exited")
+				},
+			)
+		}()
 	}
 }
 
@@ -89,31 +118,6 @@ func openBrowser(url string) {
 	if err := cmd.Start(); err != nil {
 		global.Logger.Error("Failed to open browser:", zap.Error(err))
 	}
-}
-
-func initSystemTray() {
-	defer wg.Done() // 系统托盘退出时减少计数
-
-	systray.Run(
-		func() {
-			systray.SetIcon(icon.Data)
-			systray.SetTitle("low-file")
-			systray.SetTooltip("low-file - PID: " + strconv.Itoa(currentPID))
-
-			mQuit := systray.AddMenuItem("退出", "退出程序")
-			mQuit.SetIcon(icon.Data)
-
-			go func() {
-				<-mQuit.ClickedCh
-				global.Logger.Info("Received quit signal from system tray")
-				// 发送退出信号
-				close(shutdownChan)
-			}()
-		},
-		func() {
-			global.Logger.Info("System tray exited")
-		},
-	)
 }
 
 func waitForShutdown() {
