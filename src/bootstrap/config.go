@@ -3,10 +3,11 @@ package bootstrap
 import (
 	"errors"
 	"flag"
-	"github.com/spf13/viper"
 	"log"
 	"low-file/src/global"
 	"path/filepath"
+
+	"github.com/spf13/viper"
 )
 
 func initConfig() {
@@ -26,6 +27,7 @@ func setupDefaults() {
 	viper.SetDefault("Port", ":23547")
 	viper.SetDefault("ExternalLink", []string{})
 	viper.SetDefault("AutoOpenBrowser", true)
+	viper.SetDefault("AutoOpenBrowserPath", "")
 	viper.SetDefault("Overwrite", false)
 	viper.SetDefault("Username", "admin")
 	viper.SetDefault("Password", "123456")

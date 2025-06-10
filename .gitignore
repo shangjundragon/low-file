@@ -25,3 +25,4 @@ low-file.exe
 *.njsproj
 *.sln
 *.sw?
+main/__debug_*.exe
