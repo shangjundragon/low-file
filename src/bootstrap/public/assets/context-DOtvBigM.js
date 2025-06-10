@@ -1,1 +1,0 @@
-import{createInjectionKey as e}from"./router-Dj4q5DBF.js";const t=e(`n-message-api`),n=e(`n-message-provider`);export{t as messageApiInjectionKey,n as messageProviderInjectionKey};
