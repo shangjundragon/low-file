@@ -28,7 +28,8 @@ var (
 	// 添加退出控制通道
 	shutdownChan = make(chan struct{})
 	// 添加等待组确保优雅退出
-	wg sync.WaitGroup
+	wg        sync.WaitGroup
+	serverURL string
 )
 
 func main() {
@@ -59,7 +60,7 @@ func afterRun(port string) {
 	// 确保服务器已启动
 	time.Sleep(500 * time.Millisecond)
 
-	serverURL := fmt.Sprintf("http://localhost%s", port)
+	serverURL = fmt.Sprintf("http://localhost%s", port)
 	global.Logger.Info("Server running at " + serverURL)
 
 	// 自动打开浏览器
@@ -91,8 +92,12 @@ func afterRun(port string) {
 					mOpen := systray.AddMenuItem("打开", "打开")
 					mOpen.SetIcon(icon.Data)
 					go func() {
-						<-mOpen.ClickedCh
-						openBrowser(serverURL)
+						// 循环监听所有点击事件
+						for range mOpen.ClickedCh {
+							global.Logger.Info("点击打开按钮")
+							openBrowser(serverURL)
+						}
+
 					}()
 				},
 				func() {

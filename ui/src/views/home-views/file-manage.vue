@@ -142,6 +142,7 @@
           </template>
         </n-button>
 
+
         <n-button @click="handleClickDelete" block size="small" type="error" ghost>删除
           <template #icon>
             <n-icon size="20">
@@ -344,13 +345,20 @@ function onSelectAction(action, row) {
   if (action === 'copyPath') {
     copyText(row.filePath)
   }
+  if (action === 'copyLink') {
+    copyText(getFileLink(row))
+  }
 }
 
 const actionOptions = ref([
   {
     label: '复制路径',
     key: 'copyPath',
-  }
+  },
+  {
+    label: '复制链接',
+    key: 'copyLink',
+  },
 ])
 
 const breadcrumbs = ref([])
