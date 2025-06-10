@@ -14,7 +14,7 @@ go env -w GOOS=windows
 
 echo 构建exe中。。。
 
-go build -o ./target/low-file.exe -ldflags "-w -s" -trimpath ./main/main.go
+go build -o ./target/low-file.exe -ldflags "-w -s -H=windowsgui" -trimpath ./main/main.go
 
 if %errorlevel% neq 0 (
     echo Error: 构建失败!!!
