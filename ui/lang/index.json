@@ -1,0 +1,214 @@
+{
+	"qylb2": {
+		"zh-cn": "首页",
+		"en": "Home Page"
+	},
+	"d55wyc4": {
+		"zh-cn": "文件管理",
+		"en": "File management"
+	},
+	"iv8o2t7": {
+		"zh-cn": "服务器未知错误",
+		"en": "Unknown server error"
+	},
+	"uyl9ynk": {
+		"zh-cn": "无效的会话，或者会话已过期，请重新登录。",
+		"en": "If the session is invalid or has expired, please log in again."
+	},
+	"607opx6": {
+		"zh-cn": "接口连接异常",
+		"en": "Interface connection anomaly"
+	},
+	"6gg78m6": {
+		"zh-cn": "接口请求超时",
+		"en": "Interface request timeout"
+	},
+	"heqm2": {
+		"zh-cn": "接口",
+		"en": "Interface"
+	},
+	"gody2": {
+		"zh-cn": "异常",
+		"en": "Anomaly"
+	},
+	"ejix2": {
+		"zh-cn": "刷新",
+		"en": "Refresh"
+	},
+	"g351": {
+		"zh-cn": "共",
+		"en": "A total of"
+	},
+	"u491": {
+		"zh-cn": "项",
+		"en": "item"
+	},
+	"c4ffd3": {
+		"zh-cn": "二维码",
+		"en": "Qr code"
+	},
+	"jx65og7": {
+		"zh-cn": "已复制到剪贴板",
+		"en": "Copied to the clipboard"
+	},
+	"day6pq4": {
+		"zh-cn": "无法复制",
+		"en": "Cannot be copied"
+	},
+	"7q8c6sb": {
+		"zh-cn": "已复制分享链接到剪贴板",
+		"en": "The sharing link has been copied to the clipboard"
+	},
+	"yqn3li8": {
+		"zh-cn": "无法复制分享链接",
+		"en": "The share link cannot be copied"
+	},
+	"2j1oau5": {
+		"zh-cn": "请输入账号",
+		"en": "Please enter the account."
+	},
+	"2j9vj05": {
+		"zh-cn": "请输入密码",
+		"en": "Please enter the password."
+	},
+	"fcewjt4": {
+		"zh-cn": "登录成功",
+		"en": "Login successful"
+	},
+	"koca2": {
+		"zh-cn": "登录",
+		"en": "Log in"
+	},
+	"7grhuz6": {
+		"zh-cn": "请输入用户名",
+		"en": "Please enter the username"
+	},
+	"hyc3iy4": {
+		"zh-cn": "记住密码",
+		"en": "Remember the password"
+	},
+	"fubds3": {
+		"zh-cn": "根目录",
+		"en": "Root directory"
+	},
+	"lpyd3p5": {
+		"zh-cn": "创建文件夹",
+		"en": "Create a folder"
+	},
+	"a6fdb94": {
+		"zh-cn": "上传文件",
+		"en": "Upload a file"
+	},
+	"vesqes5": {
+		"zh-cn": "上传文件夹",
+		"en": "Upload folder"
+	},
+	"e28i2": {
+		"zh-cn": "下载",
+		"en": "Download"
+	},
+	"edt12": {
+		"zh-cn": "分享",
+		"en": "Share"
+	},
+	"qp502": {
+		"zh-cn": "预览",
+		"en": "Preview"
+	},
+	"eslg2": {
+		"zh-cn": "删除",
+		"en": "Delete"
+	},
+	"bl2ltq4": {
+		"zh-cn": "复制路径",
+		"en": "Copy the path"
+	},
+	"azeh8z4": {
+		"zh-cn": "删除成功",
+		"en": "Deletion successful"
+	},
+	"f98ri3": {
+		"zh-cn": "文件名",
+		"en": "File name"
+	},
+	"z1nd6e5": {
+		"zh-cn": "非图片文件",
+		"en": "Non-image file"
+	},
+	"d4zx3r4": {
+		"zh-cn": "文件大小",
+		"en": "File size"
+	},
+	"dl90wd4": {
+		"zh-cn": "最近更新",
+		"en": "Recent update"
+	},
+	"hkxb2": {
+		"zh-cn": "操作",
+		"en": "Operation"
+	},
+	"bl3tv44": {
+		"zh-cn": "复制链接",
+		"en": "Copy the link"
+	},
+	"75bxtw8": {
+		"zh-cn": "请输入文件夹名称",
+		"en": "Please enter the folder name"
+	},
+	"l9122": {
+		"zh-cn": "确认",
+		"en": "Confirm"
+	},
+	"ev022": {
+		"zh-cn": "取消",
+		"en": "Cancel"
+	},
+	"wrfp657": {
+		"zh-cn": "文件夹名称必填",
+		"en": "The folder name is required"
+	},
+	"999hx67": {
+		"zh-cn": "创建文件夹成功",
+		"en": "The folder was created successfully."
+	},
+	"a254jzc": {
+		"zh-cn": "确认删除所选中的文件吗？",
+		"en": "Are you sure to delete the selected file?"
+	},
+	"ep2uda5": {
+		"zh-cn": "删除失败：",
+		"en": "Deletion failed"
+	},
+	"nrtrev8": {
+		"zh-cn": "文件夹不支持下载",
+		"en": "The folder is not supported for download"
+	},
+	"nru2ze8": {
+		"zh-cn": "文件夹不支持分享",
+		"en": "The folder does not support sharing"
+	},
+	"ns6ebd8": {
+		"zh-cn": "文件夹不支持预览",
+		"en": "The folder does not support preview"
+	},
+	"a6esth4": {
+		"zh-cn": "上传成功",
+		"en": "Upload successfully"
+	},
+	"dr1ftll": {
+		"zh-cn": "复制 | 点击 | 拖动文件到该区域来上传",
+		"en": "Copy | Click | Drag the file to this area to upload"
+	},
+	"dphy2": {
+		"zh-cn": "上传",
+		"en": "Upload"
+	},
+	"hn562": {
+		"zh-cn": "提示",
+		"en": "Hint"
+	},
+	"86ymjh5": {
+		"zh-cn": "确认继续?",
+		"en": "Confirm to continue?"
+	}
+}

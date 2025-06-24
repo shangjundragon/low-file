@@ -5,6 +5,7 @@ import {defineConfig} from 'vite'
 import {resolve} from 'path';
 import VueJsx from '@vitejs/plugin-vue-jsx'
 import vue from '@vitejs/plugin-vue'
+import vitePluginsAutoI18n, { YoudaoTranslator } from 'vite-auto-i18n-plugin'
 
 
 const INVALID_CHAR_REGEX = /[\x00-\x1F\x7F<>*#"{}|^[\]`;?:&=+$,]/g;
@@ -35,7 +36,14 @@ export default defineConfig({
             // 补充全局样式引入
             importStyle: 'css',
             include: [/\.vue$/, /\.vue\?vue/, /\.jsx$/]
-        })],
+        }),
+        vitePluginsAutoI18n({
+            translator: new YoudaoTranslator({
+                appId: '62e8be749bfbcf20',
+                appKey: 'yWPgzudh1w19EyoS31p5VZXI3XjjDMhL'
+            })
+        })
+    ],
     build: {
         outDir: '../src/bootstrap/public',
         emptyOutDir: true,

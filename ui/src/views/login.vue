@@ -28,7 +28,6 @@ import {onMounted, useTemplateRef, ref} from "vue";
 import {useMessage, useLoadingBar} from "naive-ui";
 import request from '@/src/common/request.js'
 import router from '@/src/router/index.js'
-const VITE_DOC_URL = import.meta.env.VITE_DOC_URL
 
 const loadingBar = useLoadingBar();
 const formRef = useTemplateRef('formRef')

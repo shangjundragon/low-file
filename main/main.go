@@ -28,7 +28,7 @@ var (
 	// 添加退出控制通道
 	shutdownChan = make(chan struct{})
 	// 添加等待组确保优雅退出
-	wg        sync.WaitGroup
+	waitGroup sync.WaitGroup
 	serverURL string
 )
 
@@ -70,9 +70,9 @@ func afterRun(port string) {
 
 	// 启动系统托盘（仅Windows）
 	if runtime.GOOS == "windows" {
-		wg.Add(1) // 增加等待组计数
+		waitGroup.Add(1) // 增加等待组计数
 		go func() {
-			defer wg.Done() // 系统托盘退出时减少计数
+			defer waitGroup.Done() // 系统托盘退出时减少计数
 
 			systray.Run(
 				func() {
@@ -154,7 +154,7 @@ func waitForShutdown() {
 	if runtime.GOOS == "windows" {
 		systray.Quit()
 		// 等待系统托盘完全退出
-		wg.Wait()
+		waitGroup.Wait()
 	}
 
 	global.Logger.Info("Application exiting")
